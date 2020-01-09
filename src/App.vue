@@ -23,6 +23,7 @@
       >
         {{ link.label }}
       </v-btn>
+      <v-btn v-if="loggedIn" variant="primary" @click="logout">Logout</v-btn>
     </v-app-bar>
     <v-content>
       <router-view></router-view>
@@ -38,7 +39,12 @@
 </template>
 
 <script>
+import { authComputed } from './store/helpers.js'
+
 export default {
+  computed: {
+    ...authComputed
+  },
   name: 'App',
   data() {
     return {
@@ -68,6 +74,11 @@ export default {
           url: '/incomes'
         }
       ]
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
     }
   }
 }
