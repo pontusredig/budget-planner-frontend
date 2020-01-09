@@ -1,39 +1,74 @@
 <template>
-  <div id="app">
-    <nav-bar />
-    <transition name="fade" mode="out-in">
-      <router-view class="page" />
-    </transition>
-  </div>
+  <v-app
+    style="
+    background: #943D1E;
+  "
+  >
+    <v-app-bar app color="#3D0C11" dark>
+      <v-toolbar-title>
+        <v-img
+          src="../public/bp-logo-small.png"
+          max-width="250"
+          max-height="70"
+        ></v-img
+      ></v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn
+        v-for="link in links"
+        :key="`${link.label}-header-link`"
+        color="#F27C3D"
+        text
+        rounded
+        :to="link.url"
+      >
+        {{ link.label }}
+      </v-btn>
+    </v-app-bar>
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+    <v-footer color="#3D0C11">
+      <v-layout justify-center wrap color="#F27C3D">
+        <v-flex py-3 color="#F27C3D" text-center>
+          ©{{ new Date().getFullYear() }} — <strong>AleTek & PonRed</strong>
+        </v-flex>
+      </v-layout>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-import NavBar from './components/NavBar'
-
 export default {
-  components: { NavBar }
+  name: 'App',
+  data() {
+    return {
+      links: [
+        {
+          label: 'Home',
+          url: '/'
+        },
+        {
+          label: 'Login',
+          url: '/login'
+        },
+        {
+          label: 'Dashboard',
+          url: '/dashboard'
+        },
+        {
+          label: 'Expenses',
+          url: '/expenses'
+        },
+        {
+          label: 'Savings',
+          url: '/savings'
+        },
+        {
+          label: 'Incomes',
+          url: '/incomes'
+        }
+      ]
+    }
+  }
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>

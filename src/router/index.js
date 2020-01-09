@@ -1,10 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Account from '../views/Account.vue'
-import Expenses from '../views/Expenses.vue'
-import Incomes from '../views/Incomes.vue'
-import Savings from '../views/Savings.vue'
 
 Vue.use(VueRouter)
 
@@ -20,22 +16,32 @@ const router = new VueRouter({
     {
       path: '/expenses',
       name: 'expenses',
-      component: Expenses
+      component: () => import('../views/Expenses.vue')
     },
     {
       path: '/incomes',
       name: 'incomes',
-      component: Incomes
+      component: () => import('../views/Incomes.vue')
     },
     {
       path: '/savings',
       name: 'savings',
-      component: Savings
+      component: () => import('../views/Savings.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/Login.vue')
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../views/Dashboard.vue')
     },
     {
       path: '/account',
       name: 'account',
-      component: Account
+      component: () => import('../views/Account.vue')
       // meta: { requiresAuth: true }
     }
   ]
