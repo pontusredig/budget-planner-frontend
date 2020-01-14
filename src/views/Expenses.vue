@@ -2,28 +2,135 @@
   <div class="expenses">
     <h1>Information about expenses</h1>
     <v-date-picker></v-date-picker>
-    <chart :options="chartOptionsBar"></chart>
+
+    <div class="chart-container">
+      <BarChart />
+    </div>
+    <div class="chart-container">
+      <monthly-income :data="input" :options="options" />
+    </div>
+
+    <v-btn v-on:click="isHidden = !isHidden">Show a chart</v-btn>
+    <div v-if="isHidden" class="chart-container">
+      <expense-pie :options="options" />
+    </div>
+    <div v-if="isHidden" class="chart-container">
+      <ExpenseDoughnut :options="options" />
+    </div>
+    <div v-if="isHidden" class="chart-container">
+      <HorizontalChart />
+    </div>
+    <v-btn v-on:click="isExpenses = !isExpenses ">Expenses</v-btn>
+    <v-btn v-on:click="isIncomes = !isIncomes ">Incomes</v-btn>
+    <div v-if="isExpenses" class="chart-container">
+      <BarChartExpenseCategories />
+    </div>
+    <div v-if="isIncomes" class="chart-container">
+      <BarChartIncomeCategories />
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'chart',
-  data: () => ({
-    chartOptionsBar: {
-      xAxis: {
-        data: ['Q1', 'Q2', 'Q3', 'Q4']
+  import BarChart from '@/components/charts/BarChart.vue'
+  import MonthlyIncome from '@/components/charts/MonthlyIncome'
+  import ExpensePie from '@/components/charts/ExpensePie'
+  import ExpenseDoughnut from '@/components/charts/ExpenseDoughnut'
+  import HorizontalChart from '@/components/charts/HorizontalChart'
+  import BarChartExpenseCategories from '@/components/charts/BarChartExpenseCategories'
+  import BarChartIncomeCategories from '@/components/charts/BarChartIncomeCategories'
+
+  export default {
+    components: {
+      BarChart,
+      MonthlyIncome,
+      ExpensePie,
+      ExpenseDoughnut,
+      HorizontalChart,
+      BarChartExpenseCategories,
+      BarChartIncomeCategories
+    },
+    data: () => ({
+      isHidden: true,
+      isExpenses: true,
+      isIncomes: false,
+      input: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+          label: 'My First dataset',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: [0, 10, 5, 2, 20, 30, 45]
+        }]
       },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          type: 'bar',
-          data: [63, 75, 24, 92]
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          labels: {
+            fontColor: 'white',
+            fontSize: 18
+          },
+          position: 'bottom'
+        },
+        title: {
+          display: true,
+          text: 'Expense Summary',
+          fontColor: 'white',
+          fontSize: 18
+        },
+        plugins: {
+          datalabels: {
+            color: '#fff',
+            anchor: 'end',
+            align: 'start',
+            offset: -10,
+            borderWidth: 2,
+            borderColor: '#fff',
+            borderRadius: 25,
+            backgroundColor: context => {
+              return context.dataset.backgroundColor
+            },
+            font: {
+              // weight: 'bold',
+              size: '12'
+            },
+            formatter: function (value, ctx) {
+              let sum = 0
+              let dataArr = ctx.chart.data.datasets[0].data
+              dataArr.map(data => {
+                sum += data
+              })
+              let percentage = ((value * 100) / sum).toFixed(2) + '%'
+              return percentage
+            },
+            innerLabels: {
+              value: {},
+              title: {
+                // color: 'blue'
+              }
+            }
+          }
+        },
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var dataset = data.datasets[tooltipItem.datasetIndex]
+              var index = tooltipItem.index
+              return dataset.labels[index] + ': ' + dataset.data[index]
+            }
+          }
         }
-      ]
-    }
-  })
-}
+      }
+    })
+  }
 </script>
+
+<style>
+  .chart-container {
+    position: relative;
+    height: 40vh;
+    width: 80vw;
+  }
+</style>
