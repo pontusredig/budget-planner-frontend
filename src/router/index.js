@@ -16,17 +16,20 @@ const router = new VueRouter({
     {
       path: '/expenses',
       name: 'expenses',
-      component: () => import('../views/Expenses.vue')
+      component: () => import('../views/Expenses.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/incomes',
       name: 'incomes',
-      component: () => import('../views/Incomes.vue')
+      component: () => import('../views/Incomes.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/savings',
       name: 'savings',
-      component: () => import('../views/Savings.vue')
+      component: () => import('../views/Savings.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -41,7 +44,8 @@ const router = new VueRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('../views/Dashboard.vue')
+      component: () => import('../views/Dashboard.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/account',
@@ -50,6 +54,19 @@ const router = new VueRouter({
       // meta: { requiresAuth: true }
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem('user')
+  // eslint-disable-next-line no-console
+  console.log('Är du inloggad?' + loggedIn)
+
+  if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
+    next('/')
+    // eslint-disable-next-line no-console
+    console.log('Du är inte inloggad!')
+  }
+  next()
 })
 
 export default router

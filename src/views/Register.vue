@@ -96,7 +96,7 @@ export default {
     },
     register() {
       axios
-        .post('//192.168.99.100:8000/users/register', {
+        .post('/api/users/register', {
           email: this.username,
           password: this.password
           //  matchingPassword: this.matchingPassword

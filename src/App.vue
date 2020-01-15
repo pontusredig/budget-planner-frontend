@@ -23,7 +23,8 @@
       >
         {{ link.label }}
       </v-btn>
-      <v-btn v-if="loggedIn" variant="primary" @click="logout">Logout</v-btn>
+      <v-btn v-if="loggedIn" variant="success" @click="logout">Logout</v-btn>
+      <v-btn v-else variant="primary">Login</v-btn>
     </v-app-bar>
     <v-content>
       <router-view></router-view>

@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: localStorage.getItem('user')
   },
   mutations: {
     SET_USER_DATA(state, userData) {
@@ -25,17 +25,15 @@ export default new Vuex.Store({
   actions: {
     login({ commit }, credentials) {
       console.log('credentials are', credentials)
-      return axios
-        .post('//192.168.99.100:8000/authenticate', credentials)
-        .then(({ data }) => {
-          console.log('user data is', data)
-          commit('SET_USER_DATA', data)
-        })
+      return axios.post('/api/authenticate', credentials).then(({ data }) => {
+        console.log('user data is', data)
+        commit('SET_USER_DATA', data)
+      })
     },
     register({ commit }, credentials) {
       console.log('credentials are', credentials)
       return axios
-        .post('//192.168.99.100:8000/users/register', credentials)
+        .post('//localhost:8081/users/register', credentials)
         .then(({ data }) => {
           console.log('user data is', data)
           commit('SET_USER_DATA', data)
