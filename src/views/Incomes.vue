@@ -1,32 +1,80 @@
 <template>
   <div class="incomes" style="width: 90%">
     <h1>Incomes</h1>
-    <p>Submit a new income:</p>
-    <v-col cols="10" sm="4" md="3">
-      <v-text-field label="Amount" outlined></v-text-field>
-    </v-col>
+    <v-card>
+      <v-col cols="4" md="3" class="pb-0">
+        <p>Submit a new income:</p>
+      </v-col>
+      <v-col cols="4" md="3" class="py-0">
+        <v-text-field label="Amount" v-model="amount" outlined></v-text-field>
+      </v-col>
 
-    <v-col cols="10" sm="4" md="3">
-      <v-text-field label="Event" outlined></v-text-field>
-    </v-col>
+      <v-col cols="4" md="3" class="py-0">
+        <v-text-field label="Event" v-model="event" outlined></v-text-field>
+      </v-col>
 
-    <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-        <v-btn color="primary" dark v-on="on">
-          Dropdown
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item v-for="(ctg, index) in incomeCategories" :key="index">
-          <v-list-item-title>{{ ctg.ctg }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+      <v-menu
+        v-model="fromDateMenu"
+        :close-on-content-click="false"
+        :nudge-right="50"
+        transition="scale-transition"
+        offset-y
+        max-width="290px"
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on }">
+          <v-col cols="4" md="3" class="py-0">
+            <v-text-field
+              label="Date"
+              outlined
+              readonly
+              :value="date"
+              v-on="on"
+            ></v-text-field>
+          </v-col>
+        </template>
+        <v-date-picker
+          v-model="date"
+          no-title
+          @input="fromDateMenu = false"
+        ></v-date-picker>
+      </v-menu>
+      <p></p>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-col cols="4" md="3" class="py-0">
+            <v-select
+              :items="categories"
+              label="Category"
+              v-model="incomeCategory"
+              outlined
+            ></v-select>
+          </v-col>
+        </template>
+      </v-menu>
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-col cols="4" md="3" class="py-0">
+            <v-select
+              :items="statuses"
+              label="Status"
+              v-model="status"
+              outlined
+            ></v-select>
+          </v-col>
+        </template>
+      </v-menu>
+      <v-col cols="4" sm="2" md="3" class="py-0">
+        <v-btn color="info" @click="addIncome">ADD INCOME</v-btn>
+      </v-col>
+    </v-card>
 
     <v-data-table
       :headers="headers"
       :items="incomes"
-      :items-per-page="5"
+      :items-per-page="10"
       class="elevation-1"
     ></v-data-table>
   </div>
@@ -45,6 +93,14 @@ export default {
   data() {
     return {
       url: '/api/income/getall',
+      fromDateMenu: false,
+      date: null,
+      amount: null,
+      event: null,
+      incomeCategory: null,
+      status: null,
+      categories: ['BENEFIT', 'LOAN', 'SALARY', 'SALE'],
+      statuses: ['EXPENDABLE', 'SAVINGS'],
       errored: false,
 
       headers: [
@@ -58,7 +114,7 @@ export default {
         { text: 'Event', value: 'name' },
         { text: 'Status', value: 'incomeStatus' }
       ],
-      incomeCategories: [{ ctg: 'SALARY' }, { ctg: 'SALE' }, { ctg: 'LOAN' }],
+
       incomes: []
     }
   },
@@ -77,6 +133,25 @@ export default {
         .finally(() => (this.loading = false))
       // eslint-disable-next-line no-console
       console.log(this.incomes)
+    },
+    addIncome() {
+      axios
+        .post('/api/income/add', {
+          amount: this.amount,
+          incomeCategory: this.incomeCategory,
+          name: this.event,
+          date: this.date,
+          incomeStatus: this.status
+        })
+        .then(response => {
+          this.message = response.data
+        })
+        .catch(error => {
+          // eslint-disable-next-line no-console
+          console.log(error)
+          this.errored = true
+        })
+        .finally(() => this.fetchData())
     }
   }
 }

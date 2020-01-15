@@ -13,18 +13,21 @@
         ></v-img
       ></v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        v-for="link in links"
-        :key="`${link.label}-header-link`"
-        color="#F27C3D"
-        text
-        rounded
-        :to="link.url"
+      <div v-if="loggedIn">
+        <v-btn
+          v-for="link in links"
+          :key="`${link.label}-header-link`"
+          color="#F27C3D"
+          text
+          rounded
+          :to="link.url"
+        >
+          {{ link.label }}
+        </v-btn>
+      </div>
+      <v-btn v-if="loggedIn" color="#F27C3D" rounded @click="logout"
+        >Logout</v-btn
       >
-        {{ link.label }}
-      </v-btn>
-      <v-btn v-if="loggedIn" variant="success" @click="logout">Logout</v-btn>
-      <v-btn v-else variant="primary">Login</v-btn>
     </v-app-bar>
     <v-content>
       <router-view></router-view>
@@ -53,10 +56,6 @@ export default {
         {
           label: 'Home',
           url: '/'
-        },
-        {
-          label: 'Login',
-          url: '/login'
         },
         {
           label: 'Dashboard',

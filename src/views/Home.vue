@@ -1,13 +1,15 @@
 <template>
   <div class="home">
     <v-row align="center" justify="center">
-      <v-img
-        src="../../public/bp-logo-circle2.png"
-        aspect-ratio="1"
-        class="my-10"
-        max-width="600"
-        max-height="600"
-      ></v-img>
+      <transition name="fade">
+        <v-img
+          src="../../public/bp-logo-circle2.png"
+          aspect-ratio="1"
+          class="my-10"
+          max-width="600"
+          max-height="600"
+        ></v-img>
+      </transition>
     </v-row>
     <v-row align="center" justify="center">
       <div v-if="!loggedIn">
