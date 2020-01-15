@@ -97,7 +97,7 @@ export default {
     register() {
       axios
         .post('/api/users/register', {
-          email: this.username,
+          email: this.email,
           password: this.password
           //  matchingPassword: this.matchingPassword
         })
@@ -113,7 +113,7 @@ export default {
         .finally(() => this.$router.push({ name: 'login' }))
 
       // eslint-disable-next-line no-console
-      console.log('REGISTRATORRRRR')
+      console.log(this.email)
     }
   }
 }
