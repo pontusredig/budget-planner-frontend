@@ -10,18 +10,40 @@
     ></v-data-table>
     <v-snackbar v-model="snackbar">
       You have selected {{ currentItem }}
-      <v-btn color="pink" text @click="snackbar = false">
-        Close
-      </v-btn>
+      <v-btn color="pink" text @click="snackbar = false">Close</v-btn>
     </v-snackbar>
+
+    <div class="chart-container">
+      <BarChart />
+    </div>
+
+    <v-btn v-on:click="isHidden = !isHidden">Show Expense Pie Chart</v-btn>
+    <div v-if="isHidden" class="chart-container">
+      <expense-pie />
+      <hr />
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import BarChart from '@/components/charts/BarChart.vue'
+import ExpensePie from '@/components/charts/ExpensePie'
 export default {
+  created() {},
+  components: {
+    BarChart,
+    ExpensePie
+  },
   name: 'DashboardPage',
   data() {
     return {
+      incomeUrl: '/api/income/getall',
+      expenseUrl: '/api/expense/getall',
+      incomes: null,
+      expenses: null,
+      isHidden: false,
+
       currentItem: '',
       snackbar: false,
       headers: [
@@ -125,9 +147,34 @@ export default {
     selectRow(event) {
       this.snackbar = true
       this.currentItem = event.name
+    },
+    getAllIncomes() {
+      fetch(this.incomeUrl)
+        .then(response => response.json())
+        .then(result => {
+          this.incomes = result
+        })
+    },
+    getAllExpenses() {
+      axios
+        .get(this.expenseUrl)
+        .then(response => {
+          this.expenses = response.data
+        })
+        .catch(error => {
+          this.errored = true
+        })
+        .finally(() => (this.loading = false))
+      console.log(this.expenses)
     }
   }
 }
 </script>
 
-<style></style>
+<style>
+.chart-container {
+  position: relative;
+  height: 40vh;
+  width: 80vw;
+}
+</style>
