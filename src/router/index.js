@@ -58,13 +58,9 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const loggedIn = localStorage.getItem('user')
-  // eslint-disable-next-line no-console
-  console.log('Är du inloggad?' + loggedIn)
 
   if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
     next('/')
-    // eslint-disable-next-line no-console
-    console.log('Du är inte inloggad!')
   }
   next()
 })

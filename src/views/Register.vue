@@ -111,9 +111,6 @@ export default {
           this.errored = true
         })
         .finally(() => this.$router.push({ name: 'login' }))
-
-      // eslint-disable-next-line no-console
-      console.log(this.email)
     }
   }
 }

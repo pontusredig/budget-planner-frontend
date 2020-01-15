@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
@@ -24,18 +23,14 @@ export default new Vuex.Store({
   },
   actions: {
     login({ commit }, credentials) {
-      console.log('credentials are', credentials)
       return axios.post('/api/authenticate', credentials).then(({ data }) => {
-        console.log('user data is', data)
         commit('SET_USER_DATA', data)
       })
     },
     register({ commit }, credentials) {
-      console.log('credentials are', credentials)
       return axios
         .post('//localhost:8081/users/register', credentials)
         .then(({ data }) => {
-          console.log('user data is', data)
           commit('SET_USER_DATA', data)
         })
     },

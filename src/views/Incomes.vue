@@ -131,8 +131,6 @@ export default {
           this.errored = true
         })
         .finally(() => (this.loading = false))
-      // eslint-disable-next-line no-console
-      console.log(this.incomes)
     },
     addIncome() {
       axios
