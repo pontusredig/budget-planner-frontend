@@ -14,6 +14,7 @@
     <div :key="expense.id" v-for="expense in expenses">
       {{ expense.expenseCategory }}
     </div>
+    <div>categories {{ categories }}</div>
 
     <hr />
     <div class="chart-container">
@@ -33,7 +34,9 @@ import ExpensePie from '@/components/charts/ExpensePie'
 export default {
   created() {
     this.getAllExpenses()
-    this.getAllIncomes(), this.getExpenseByFood(), this.log(this.expenses)
+    this.getAllIncomes(),
+     this.getExpenseByFood(), 
+     this.getCategory()
   },
   computed: {
     totalIncomes: function() {
@@ -67,7 +70,8 @@ export default {
       expenses: [],
       expenseByFood: [],
       innerData: [],
-      outerData: []
+      outerData: [],
+      categories:[]
       // isHidden: false,
     }
   },
@@ -98,14 +102,34 @@ export default {
         })
         .finally(() => (this.loading = false))
       // this.log(this.expenses)
-
       // this.test(this.expenseUrl, this.expenses)
     },
+    getCategory(){
+      for (let index = 0; index < this.expenses.length; index++) {
+        this.categories.push(this.expenses.expenseCategory)
+      }
+      });
+    },
     getExpenseByFood() {
-      axios
-        .get(this.foodUrl)
+      // axios
+      //   .get(this.foodUrl)
+      //   .then(response => {
+      //     this.expenseByFood = response.data
+      //   })
+      //   // eslint-disable-next-line no-unused-vars
+      //   .catch(error => {
+      //     this.log(error)
+      //     this.errored = true
+      //   })
+      //   .finally(() => (this.loading = false))
+      this.test(this.foodUrl,this.expenseByFood)
+    },
+    test(url,item){
+      item
+         axios
+        .get(url)
         .then(response => {
-          this.expenseByFood = response.data
+          item = response.data
         })
         // eslint-disable-next-line no-unused-vars
         .catch(error => {
@@ -123,9 +147,10 @@ export default {
         return total + Number(item.amount)
       }, 0)
     },
-    log(item) {
+    log(obj) {
+      var parsedobj = JSON.parse(JSON.stringify(obj))
       // eslint-disable-next-line no-console
-      console.log(item)
+      console.log(parsedobj)
     }
   }
 }
