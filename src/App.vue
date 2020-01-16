@@ -1,9 +1,5 @@
 <template>
-  <v-app
-    style="
-    background: #943D1E;
-  "
-  >
+  <v-app>
     <v-app-bar app color="#3D0C11" dark>
       <v-toolbar-title>
         <v-img
@@ -62,16 +58,16 @@ export default {
           url: '/dashboard'
         },
         {
+          label: 'Incomes',
+          url: '/incomes'
+        },
+        {
           label: 'Expenses',
           url: '/expenses'
         },
         {
           label: 'Savings',
           url: '/savings'
-        },
-        {
-          label: 'Incomes',
-          url: '/incomes'
         }
       ]
     }

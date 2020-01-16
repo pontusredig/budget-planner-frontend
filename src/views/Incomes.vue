@@ -1,9 +1,9 @@
 <template>
   <div class="incomes" style="width: 90%">
-    <h1>Incomes</h1>
+    <h1>INCOMES</h1>
     <v-card>
       <v-col cols="4" md="3" class="pb-0">
-        <p>Submit a new income:</p>
+        <p>Add a new income:</p>
       </v-col>
       <v-col cols="4" md="3" class="py-0">
         <v-text-field label="Amount" v-model="amount" outlined></v-text-field>
@@ -14,7 +14,7 @@
       </v-col>
 
       <v-menu
-        v-model="fromDateMenu"
+        v-model="postDateMenu"
         :close-on-content-click="false"
         :nudge-right="50"
         transition="scale-transition"
@@ -36,10 +36,9 @@
         <v-date-picker
           v-model="date"
           no-title
-          @input="fromDateMenu = false"
+          @input="postDateMenu = false"
         ></v-date-picker>
       </v-menu>
-      <p></p>
 
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -87,13 +86,14 @@ export default {
   name: 'Incomes',
 
   created() {
-    this.fetchData()
+    this.fetchIncomes()
   },
 
   data() {
     return {
-      url: '/api/income/getall',
-      fromDateMenu: false,
+      getUrl: '/api/income/getall',
+      postUrl: '/api/income/add',
+      postDateMenu: false,
       date: null,
       amount: null,
       event: null,
@@ -120,9 +120,9 @@ export default {
   },
 
   methods: {
-    fetchData() {
+    fetchIncomes() {
       axios
-        .get(this.url)
+        .get(this.getUrl)
         .then(response => {
           this.incomes = response.data
         })
@@ -134,7 +134,7 @@ export default {
     },
     addIncome() {
       axios
-        .post('/api/income/add', {
+        .post(this.postUrl, {
           amount: this.amount,
           incomeCategory: this.incomeCategory,
           name: this.event,
@@ -149,7 +149,7 @@ export default {
           console.log(error)
           this.errored = true
         })
-        .finally(() => this.fetchData())
+        .finally(() => this.fetchIncomes())
     }
   }
 }
