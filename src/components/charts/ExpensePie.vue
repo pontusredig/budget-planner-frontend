@@ -5,6 +5,7 @@ export default {
   extends: Pie,
   // props: ['data', 'options'],
   // props: ['options'],
+  props: ['outerData', 'innerData'],
   mounted() {
     // this.renderChart(this.data, this.options, ChartDataLabels)
     this.renderChart(
@@ -14,7 +15,8 @@ export default {
         datasets: [
           // Outer pie data starts
           {
-            data: [7500, 500, 1500, 500, 1000, 500, 1000],
+            // data: [7500, 500, 1500, 500, 1000, 500, 1000],
+            data: this.outerData,
             backgroundColor: [
               '#1e9478',
               '#1e9478',
@@ -50,7 +52,8 @@ export default {
           // Outer pie data ends
           // Inner pie data starts
           {
-            data: [8000, 2000, 1500, 1000],
+            // data: [8000, 2000, 1500, 1000],
+            data: this.innerData,
             // label: 'Expense Categories',
             labels: ['Bills', 'Food', 'Pet', 'Clothes'],
             backgroundColor: ['#1e9478', '#943d1e', '#1e7594', '#941e75'],
