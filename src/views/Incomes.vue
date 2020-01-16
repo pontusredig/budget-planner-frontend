@@ -1,6 +1,7 @@
 <template>
   <div class="incomes" style="width: 90%">
     <h1>INCOMES</h1>
+
     <v-card>
       <v-col cols="4" md="3" class="pb-0">
         <p>Add a new income:</p>
