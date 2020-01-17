@@ -9,12 +9,18 @@
     <div>totalIncomes {{ totalIncomes }}</div>
     <div>totalExpenses {{ totalExpenses }}</div>
     <div>totalFood {{ totalFood }}</div>
+    <div>getCategory {{ getCategory }}</div>
 
     <hr />
-    <div :key="expense.id" v-for="expense in expenses">
+    <div
+      :key="expense.id"
+      v-for="expense in expenses"
+    >
       {{ expense.expenseCategory }}
     </div>
     <div>categories {{ categories }}</div>
+    <div>expenses {{ expenses[1] }}</div>
+    <div>expenses {{ expenses[1].expenseCategory }}</div>
 
     <hr />
     <div class="chart-container">
@@ -34,27 +40,46 @@ import ExpensePie from '@/components/charts/ExpensePie'
 export default {
   created() {
     this.getAllExpenses()
-    this.getAllIncomes(),
-     this.getExpenseByFood(), 
-     this.getCategory()
+    this.getAllIncomes(), this.getExpenseByFood()
   },
   computed: {
-    totalIncomes: function() {
-      // if (!this.incomes) {
-      //   return 0
-      // }
-      // return this.incomes.reduce(function (total, income) {
-      //   return total + Number(income.amount)
-      // }, 0)
+    totalIncomes() {
       return this.total(this.incomes)
     },
-    totalExpenses: function() {
+    totalExpenses() {
       return this.total(this.expenses)
     },
-    totalFood: function() {
+    totalFood() {
       return this.total(this.expenseByFood)
+    },
+    getAmountByExpenseCategory() {
+      const test = []
+      let bills = 0
+      let food = 0
+      let pet = 0
+      let clothes = 0
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        if (cat == 'BILLS') {
+          bills += amount
+        } else if (cat == 'FOOD') {
+          food += amount
+          this.log('food' + food)
+        } else if (cat == 'PET') {
+          pet += amount
+        } else if (cat == 'CLOTHES') {
+          clothes += amount
+        }
+        this.log('food ' + food)
+      }
+      test.push(bills, food, pet, clothes)
+      this.log('test' + test)
+      // this.innerData = test
+      return test
     }
   },
+
   components: {
     BarChart,
     ExpensePie
@@ -69,9 +94,9 @@ export default {
       incomes: [],
       expenses: [],
       expenseByFood: [],
-      innerData: [],
+      innerData: this.getAmountByExpenseCategory(),
       outerData: [],
-      categories:[]
+      categories: []
       // isHidden: false,
     }
   },
@@ -104,32 +129,12 @@ export default {
       // this.log(this.expenses)
       // this.test(this.expenseUrl, this.expenses)
     },
-    getCategory(){
-      for (let index = 0; index < this.expenses.length; index++) {
-        this.categories.push(this.expenses.expenseCategory)
-      }
-      });
-    },
+
     getExpenseByFood() {
-      // axios
-      //   .get(this.foodUrl)
-      //   .then(response => {
-      //     this.expenseByFood = response.data
-      //   })
-      //   // eslint-disable-next-line no-unused-vars
-      //   .catch(error => {
-      //     this.log(error)
-      //     this.errored = true
-      //   })
-      //   .finally(() => (this.loading = false))
-      this.test(this.foodUrl,this.expenseByFood)
-    },
-    test(url,item){
-      item
-         axios
-        .get(url)
+      axios
+        .get(this.foodUrl)
         .then(response => {
-          item = response.data
+          this.expenseByFood = response.data
         })
         // eslint-disable-next-line no-unused-vars
         .catch(error => {
@@ -137,7 +142,22 @@ export default {
           this.errored = true
         })
         .finally(() => (this.loading = false))
+      // this.test(this.foodUrl, this.expenseByFood)
     },
+    // test(url, item) {
+    //   item
+    //   axios
+    //     .get(url)
+    //     .then(response => {
+    //       item = response.data
+    //     })
+    //     // eslint-disable-next-line no-unused-vars
+    //     .catch(error => {
+    //       this.log(error)
+    //       this.errored = true
+    //     })
+    //     .finally(() => (this.loading = false))
+    // },
 
     total: function(item) {
       if (!item) {
@@ -151,6 +171,7 @@ export default {
       var parsedobj = JSON.parse(JSON.stringify(obj))
       // eslint-disable-next-line no-console
       console.log(parsedobj)
+      // console.log(obj)
     }
   }
 }
