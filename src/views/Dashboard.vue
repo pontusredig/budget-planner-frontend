@@ -9,22 +9,22 @@
     <div>totalIncomes {{ totalIncomes }}</div>
     <div>totalExpenses {{ totalExpenses }}</div>
     <div>totalFood {{ totalFood }}</div>
-    <div>getCategory {{ getCategory }}</div>
+    <!-- <div>getAmountByExpenseCategory {{ getAmountByExpenseCategory }}</div> -->
+    <div>innerData {{ innerData }}</div>
+    <div>outerData {{ outerData }}</div>
+    <div>outer {{ outer }}</div>
 
     <hr />
-    <div
-      :key="expense.id"
-      v-for="expense in expenses"
-    >
+    <div :key="expense.id" v-for="expense in expenses">
       {{ expense.expenseCategory }}
     </div>
-    <div>categories {{ categories }}</div>
-    <div>expenses {{ expenses[1] }}</div>
-    <div>expenses {{ expenses[1].expenseCategory }}</div>
 
     <hr />
-    <div class="chart-container">
-      <expense-pie :innerData="innerData" />
+    <div v-if="isNull" class="chart-container">
+      <expense-pie
+        :innerData="innerData"
+        :outer="outer"
+      />
     </div>
 
     <div class="chart-container">
@@ -39,9 +39,14 @@ import BarChart from '@/components/charts/BarChart.vue'
 import ExpensePie from '@/components/charts/ExpensePie'
 export default {
   created() {
-    this.getAllExpenses()
-    this.getAllIncomes(), this.getExpenseByFood()
+    const a = this.getAllExpenses()
+    const b = this.getAllIncomes()
+    Promise.all([a, b]).then(() => {
+      this.getInnerDataByExpenseCategory()
+      this.getOuterDataByExpenseCategory()
+    })
   },
+
   computed: {
     totalIncomes() {
       return this.total(this.incomes)
@@ -52,34 +57,14 @@ export default {
     totalFood() {
       return this.total(this.expenseByFood)
     },
-    getAmountByExpenseCategory() {
-      const test = []
-      let bills = 0
-      let food = 0
-      let pet = 0
-      let clothes = 0
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
-        if (cat == 'BILLS') {
-          bills += amount
-        } else if (cat == 'FOOD') {
-          food += amount
-          this.log('food' + food)
-        } else if (cat == 'PET') {
-          pet += amount
-        } else if (cat == 'CLOTHES') {
-          clothes += amount
-        }
-        this.log('food ' + food)
-      }
-      test.push(bills, food, pet, clothes)
-      this.log('test' + test)
-      // this.innerData = test
-      return test
+    isNull(){
+      if (this.outer != null && this.innerData != null) {
+        return true
     }
+    else{
+      return false
+    }}
   },
-
   components: {
     BarChart,
     ExpensePie
@@ -94,70 +79,131 @@ export default {
       incomes: [],
       expenses: [],
       expenseByFood: [],
-      innerData: this.getAmountByExpenseCategory(),
+      innerData: null,
       outerData: [],
-      categories: []
+      outerDataLabels: [],
+      outerDataCategories: [],
+      outer: null
       // isHidden: false,
     }
   },
   methods: {
     getAllIncomes() {
-      axios
-        .get(this.incomeUrl)
-        .then(response => {
-          this.incomes = response.data
-        })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => {
-          this.errored = true
-        })
-        .finally(() => (this.loading = false))
+      return (
+        axios
+          .get(this.incomeUrl)
+          .then(response => {
+            this.incomes = response.data
+          })
+          // eslint-disable-next-line no-unused-vars
+          .catch(error => {
+            this.errored = true
+          })
+          .finally(() => (this.loading = false))
+      )
+
       // this.log(this.incomes.amount)
     },
     getAllExpenses() {
-      axios
-        .get(this.expenseUrl)
-        .then(response => {
-          this.expenses = response.data
-        })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => {
-          this.log(error)
-          this.errored = true
-        })
-        .finally(() => (this.loading = false))
-      // this.log(this.expenses)
-      // this.test(this.expenseUrl, this.expenses)
+      return (
+        axios
+          .get(this.expenseUrl)
+          .then(response => {
+            this.expenses = response.data
+          })
+          // eslint-disable-next-line no-unused-vars
+          .catch(error => {
+            this.log(error)
+            this.errored = true
+          })
+          .finally(() => (this.loading = false))
+      )
     },
 
-    getExpenseByFood() {
-      axios
-        .get(this.foodUrl)
-        .then(response => {
-          this.expenseByFood = response.data
-        })
-        // eslint-disable-next-line no-unused-vars
-        .catch(error => {
-          this.log(error)
-          this.errored = true
-        })
-        .finally(() => (this.loading = false))
-      // this.test(this.foodUrl, this.expenseByFood)
-    },
-    // test(url, item) {
-    //   item
-    //   axios
-    //     .get(url)
-    //     .then(response => {
-    //       item = response.data
-    //     })
-    //     // eslint-disable-next-line no-unused-vars
-    //     .catch(error => {
-    //       this.log(error)
-    //       this.errored = true
-    //     })
-    //     .finally(() => (this.loading = false))
+    // getExpenseByFood() {
+    //   return
+    //     axios.get(this.foodUrl)
+    //       .then(response => {
+    //         this.expenseByFood = response.data
+    //       })
+    //       // eslint-disable-next-line no-unused-vars
+    //       .catch(error => {
+    //         this.log(error)
+    //         this.errored = true
+    //       })
+    //       .finally(() => (this.loading = false))
+
+    //   // this.test(this.foodUrl, this.expenseByFood)
     // },
+    getInnerDataByExpenseCategory() {
+      this.innerData = []
+      let bills = 0
+      let food = 0
+      let pet = 0
+      let clothes = 0
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        if (cat == 'BILLS') {
+          bills += amount
+        } else if (cat == 'FOOD') {
+          food += amount
+        } else if (cat == 'PET') {
+          pet += amount
+        } else if (cat == 'CLOTHES') {
+          clothes += amount
+        }
+      }
+      this.innerData.push(bills, food, pet, clothes)
+    },
+    getOuterDataByExpenseCategory() {
+      this.outer = []
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        let name = this.expenses[index].name
+        if (cat == 'BILLS') {
+          this.outerData.push(amount)
+          this.outerDataLabels.push(name)
+          this.outerDataCategories.push(cat)
+        }
+      }
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        let name = this.expenses[index].name
+        if (cat == 'FOOD') {
+          this.outerData.push(amount)
+          this.outerDataLabels.push(name)
+          this.outerDataCategories.push(cat)
+        }
+      }
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        let name = this.expenses[index].name
+        if (cat == 'PET') {
+          this.outerData.push(amount)
+          this.outerDataLabels.push(name)
+          this.outerDataCategories.push(cat)
+        }
+      }
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        let name = this.expenses[index].name
+        if (cat == 'CLOTHES') {
+          this.outerData.push(amount)
+          this.outerDataLabels.push(name)
+          this.outerDataCategories.push(cat)
+        }
+      }
+      this.outer.push(
+        this.outerData,
+        this.outerDataLabels,
+        this.outerDataCategories
+      )
+    },
 
     total: function(item) {
       if (!item) {
