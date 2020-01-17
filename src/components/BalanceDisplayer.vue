@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="width: 20%">
     <p>Unpaid expenses: {{ unpaidExp }}</p>
     <p>Balance: {{ expendableBal }}</p>
     <p>Savings: {{ savingsBal }}</p>
