@@ -4,22 +4,20 @@
 
     <!-- <v-btn v-on:click="isHidden = !isHidden">Show Expense Pie Chart</v-btn> -->
     <!-- <div v-if="isHidden" class="chart-container"> -->
-
     <!-- <div :key="income.id" v-for="income in incomes" ></div> -->
+
+    <BalanceDisplayer />
+    <v-divider />
+    <MonthExpenseDisplayer
+      :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"
+    ></MonthExpenseDisplayer>
+    <!-- 
     <div>totalIncomes {{ totalIncomes }}</div>
     <div>totalExpenses {{ totalExpenses }}</div>
-    <div>totalFood {{ totalFood }}</div>
-    <!-- <div>getAmountByExpenseCategory {{ getAmountByExpenseCategory }}</div> -->
     <div>innerData {{ innerData }}</div>
     <div>outerData {{ outerData }}</div>
-    <div>outer {{ outer }}</div>
+    <div>outer {{ outer }}</div> -->
 
-    <hr />
-    <div :key="expense.id" v-for="expense in expenses">
-      {{ expense.expenseCategory }}
-    </div>
-
-    <hr />
     <div v-if="isNull" class="chart-container">
       <expense-pie :innerData="innerData" :outer="outer" />
     </div>
@@ -34,14 +32,17 @@
 import axios from 'axios'
 import BarChart from '@/components/charts/BarChart.vue'
 import ExpensePie from '@/components/charts/ExpensePie'
+import BalanceDisplayer from '@/components/BalanceDisplayer'
+import MonthExpenseDisplayer from '@/components/MonthExpenseDisplayer'
 
 export default {
   created() {
-    const a = this.getAllExpenses()
+    // const a = this.getAllExpenses() <---- All Expenses
+    const a = this.getExpensesMonths() // <---- Expenses the latest 3 months
     const b = this.getAllIncomes()
     Promise.all([a, b]).then(() => {
       this.getInnerDataByExpenseCategory()
-      this.getOuterDataByExpenseCategory()
+      this.getOuterDataByExpenseCategory(), this.getExpensesForMonth()
     })
   },
 
@@ -52,8 +53,8 @@ export default {
     totalExpenses() {
       return this.total(this.expenses)
     },
-    totalFood() {
-      return this.total(this.expenseByFood)
+    totalMonth() {
+      return this.total(this.expensesForCurrentMonth)
     },
     isNull() {
       if (this.outer != null && this.innerData != null) {
@@ -65,7 +66,9 @@ export default {
   },
   components: {
     BarChart,
-    ExpensePie
+    ExpensePie,
+    BalanceDisplayer,
+    MonthExpenseDisplayer
   },
   name: 'DashboardPage',
   data() {
@@ -73,14 +76,18 @@ export default {
       incomeUrl: '/api/income/getall',
       expenseUrl: '/api/expense/getall',
       foodUrl: '/api/expense/getbycategory/FOOD',
+      expenseDatesUrl: null,
+      startDate: null,
+      endDate: null,
       incomes: [],
       expenses: [],
-      expenseByFood: [],
       innerData: null,
       outerData: [],
       outerDataLabels: [],
       outerDataCategories: [],
-      outer: null
+      outer: null,
+      expensesForCurrentMonth: null,
+      sumExpensesForCurrentMonth: null
       // isHidden: false,
     }
   },
@@ -113,21 +120,75 @@ export default {
         .finally(() => (this.loading = false))
     },
 
-    // getExpenseByFood() {
-    //   return
-    //     axios.get(this.foodUrl)
-    //       .then(response => {
-    //         this.expenseByFood = response.data
-    //       })
-    //       // eslint-disable-next-line no-unused-vars
-    //       .catch(error => {
-    //         this.log(error)
-    //         this.errored = true
-    //       })
-    //       .finally(() => (this.loading = false))
+    getExpensesMonths() {
+      this.setDateUrl()
+      return (
+        axios
+          .get(this.expenseDatesUrl)
+          .then(response => {
+            this.expenses = response.data
+          })
+          // eslint-disable-next-line no-unused-vars
+          .catch(error => {
+            this.log(error)
+            this.errored = true
+          })
+          .finally(() => (this.loading = false))
+      )
+    },
+    setDateUrl() {
+      let today = this.getCurrentDate()
+      this.endDate = this.dateFormat(today)
+      this.startDate = this.dateFormat(this.getDateMonthsBefore(today, 3))
+      this.expenseDatesUrl =
+        '/api/expense/getbetweendates/' + this.startDate + '/' + this.endDate
+    },
+    dateFormat(date) {
+      let month = date.getMonth() + 1
+      if (month < 10) {
+        return date.getFullYear() + '-0' + month + '-' + date.getDate()
+      } else {
+        return date.getFullYear() + '-' + month + '-' + date.getDate()
+      }
+    },
+    getDateMonthsBefore(date, nofMonths) {
+      let thisMonth = date.getMonth()
+      date.setMonth(thisMonth - nofMonths)
+      if (
+        thisMonth - nofMonths < 0 &&
+        date.getMonth() != thisMonth + nofMonths
+      ) {
+        // date.setDate(0)
+        date.setDate(date.getDate())
+      } else if (
+        thisMonth - nofMonths >= 0 &&
+        date.getMonth() != thisMonth - nofMonths
+      ) {
+        date.setDate(date.getDate())
+        // date.setDate(0)
+      }
+      return date
+    },
+    getCurrentDate() {
+      return new Date()
+    },
+    getExpensesForMonth() {
+      let date = this.dateFormat(this.getCurrentDate())
+      let currentYear = date.substring(0, 4)
+      let currentMonth = date.substring(5, 7)
 
-    //   // this.test(this.foodUrl, this.expenseByFood)
-    // },
+      this.expensesForCurrentMonth = []
+      for (let index = 0; index < this.expenses.length; index++) {
+        let expenseYear = this.expenses[index].date.substring(0, 4)
+        let expenseMonth = this.expenses[index].date.substring(5, 7)
+        // let amount = Number(this.expenses[index].amount)
+        if (expenseMonth == currentMonth && expenseYear == currentYear) {
+          this.expensesForCurrentMonth.push(this.expenses[index])
+        }
+      }
+      // this.log(this.expensesForCurrentMonth)
+      this.sumExpensesForCurrentMonth = this.total(this.expensesForCurrentMonth)
+    },
     getInnerDataByExpenseCategory() {
       this.innerData = []
       let bills = 0
