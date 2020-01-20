@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Dashboard</h1>
+  <div align="center">
+    <h1 class="pb-10">Dashboard</h1>
 
     <!-- <v-btn v-on:click="isHidden = !isHidden">Show Expense Pie Chart</v-btn> -->
     <!-- <div v-if="isHidden" class="chart-container"> -->

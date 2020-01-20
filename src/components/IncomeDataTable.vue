@@ -114,6 +114,7 @@
 
 <script>
 import axios from 'axios'
+import { eventBus } from '../main.js'
 
 export default {
   name: 'IncomeDataTable',
@@ -124,13 +125,14 @@ export default {
     postUrl: '/api/income/add',
     putUrl: 'api/income/update/',
     deleteUrl: 'api/income/delete/',
+    categoriesUrl: 'api/expense/categories',
     postDateMenu: false,
     date: null,
     amount: null,
     event: null,
     incomeCategory: null,
     status: null,
-    categories: ['BENEFIT', 'LOAN', 'SALARY', 'SALE'],
+    categories: [],
     statuses: ['EXPENDABLE', 'SAVINGS'],
 
     headers: [
@@ -177,7 +179,7 @@ export default {
   },
 
   created() {
-    this.fetchIncomes()
+    this.fetchIncomes(), this.fetchCategories()
   },
 
   methods: {
@@ -186,6 +188,18 @@ export default {
         .get(this.getUrl)
         .then(response => {
           this.incomes = response.data
+        })
+        .catch(error => {
+          this.log(error)
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    fetchCategories() {
+      axios
+        .get(this.categoriesUrl)
+        .then(response => {
+          this.categories = response.data
         })
         .catch(error => {
           this.log(error)
@@ -206,7 +220,7 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchIncomes())
+          .finally(() => this.fetchIncomes(), eventBus.$emit('updateBalances'))
     },
 
     close() {
@@ -233,7 +247,7 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchIncomes())
+          .finally(() => this.fetchIncomes(), eventBus.$emit('updateBalances'))
       } else {
         axios
           .post(this.postUrl, {
@@ -249,7 +263,7 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchIncomes())
+          .finally(() => this.fetchIncomes(), eventBus.$emit('updateBalances'))
       }
       this.close()
     },

@@ -50,10 +50,6 @@ export default {
     return {
       links: [
         {
-          label: 'Home',
-          url: '/'
-        },
-        {
           label: 'Dashboard',
           url: '/dashboard'
         },
