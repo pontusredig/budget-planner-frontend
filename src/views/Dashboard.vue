@@ -8,9 +8,7 @@
 
     <BalanceDisplayer />
     <v-divider />
-    <MonthExpenseDisplayer
-      :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"
-    ></MonthExpenseDisplayer>
+    <MonthExpenseDisplayer :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"></MonthExpenseDisplayer>
     <!-- 
     <div>totalIncomes {{ totalIncomes }}</div>
     <div>totalExpenses {{ totalExpenses }}</div>
@@ -18,8 +16,14 @@
     <div>outerData {{ outerData }}</div>
     <div>outer {{ outer }}</div> -->
 
-    <div v-if="isNull" class="chart-container">
-      <expense-pie :innerData="innerData" :outer="outer" />
+    <div
+      v-if="isNull"
+      class="chart-container"
+    >
+      <expense-pie
+        :innerData="innerData"
+        :outer="outer"
+      />
     </div>
 
     <div class="chart-container">
@@ -38,7 +42,7 @@ import MonthExpenseDisplayer from '@/components/MonthExpenseDisplayer'
 export default {
   created() {
     // const a = this.getAllExpenses() <---- All Expenses
-    const a = this.getExpensesMonths() // <---- Expenses the latest 3 months
+    const a = this.getExpensesBetweenDates() // <---- Expenses the latest 3 months
     const b = this.getAllIncomes()
     Promise.all([a, b]).then(() => {
       this.getInnerDataByExpenseCategory()
@@ -52,9 +56,6 @@ export default {
     },
     totalExpenses() {
       return this.total(this.expenses)
-    },
-    totalMonth() {
-      return this.total(this.expensesForCurrentMonth)
     },
     isNull() {
       if (this.outer != null && this.innerData != null) {
@@ -75,7 +76,6 @@ export default {
     return {
       incomeUrl: '/api/income/getall',
       expenseUrl: '/api/expense/getall',
-      foodUrl: '/api/expense/getbycategory/FOOD',
       expenseDatesUrl: null,
       startDate: null,
       endDate: null,
@@ -120,7 +120,7 @@ export default {
         .finally(() => (this.loading = false))
     },
 
-    getExpensesMonths() {
+    getExpensesBetweenDates() {
       this.setDateUrl()
       return (
         axios

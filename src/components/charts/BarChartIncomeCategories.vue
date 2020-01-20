@@ -4,6 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 export default {
   extends: Bar,
+  props: ['incomeCategory'],
   mounted() {
     // Overwriting base render method with actual data.
     this.renderChart(
@@ -11,7 +12,8 @@ export default {
         labels: ['Salary', 'Benefit', 'Sale', 'Loan'],
         datasets: [
           {
-            data: [15000, 30000, 20000, 1000],
+            data: this.incomeCategory,
+            // data: [15000, 30000, 20000, 1000],
             backgroundColor: ['#3e95cd', '#e8c3b9', '#8e5ea2', '#941e75']
           }
         ]

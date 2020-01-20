@@ -4,14 +4,18 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 export default {
   extends: HorizontalBar,
+  // props: ['totalValues'],
+  props: ['chartValues', 'totalValues'],
   mounted() {
-    // Overwriting base render method with actual data.
     this.renderChart(
       {
         labels: ['Balance', 'Income', 'Expense'],
+        backgroundColor: ['#3e95cd', '#e8c3b9', '#8e5ea2'],
         datasets: [
           {
-            data: [15000, 30000, 20000],
+            // data: [15000, 30000, 20000],
+            data: this.totalValues,
+            // data: this.chartValues,
             backgroundColor: ['#3e95cd', '#e8c3b9', '#8e5ea2']
           }
         ]
