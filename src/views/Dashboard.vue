@@ -21,10 +21,7 @@
 
     <hr />
     <div v-if="isNull" class="chart-container">
-      <expense-pie
-        :innerData="innerData"
-        :outer="outer"
-      />
+      <expense-pie :innerData="innerData" :outer="outer" />
     </div>
 
     <div class="chart-container">
@@ -37,6 +34,7 @@
 import axios from 'axios'
 import BarChart from '@/components/charts/BarChart.vue'
 import ExpensePie from '@/components/charts/ExpensePie'
+
 export default {
   created() {
     const a = this.getAllExpenses()
@@ -57,13 +55,13 @@ export default {
     totalFood() {
       return this.total(this.expenseByFood)
     },
-    isNull(){
+    isNull() {
       if (this.outer != null && this.innerData != null) {
         return true
+      } else {
+        return false
+      }
     }
-    else{
-      return false
-    }}
   },
   components: {
     BarChart,
@@ -75,7 +73,6 @@ export default {
       incomeUrl: '/api/income/getall',
       expenseUrl: '/api/expense/getall',
       foodUrl: '/api/expense/getbycategory/FOOD',
-      errored: false,
       incomes: [],
       expenses: [],
       expenseByFood: [],
@@ -97,7 +94,7 @@ export default {
           })
           // eslint-disable-next-line no-unused-vars
           .catch(error => {
-            this.errored = true
+            this.log(error)
           })
           .finally(() => (this.loading = false))
       )
@@ -105,19 +102,15 @@ export default {
       // this.log(this.incomes.amount)
     },
     getAllExpenses() {
-      return (
-        axios
-          .get(this.expenseUrl)
-          .then(response => {
-            this.expenses = response.data
-          })
-          // eslint-disable-next-line no-unused-vars
-          .catch(error => {
-            this.log(error)
-            this.errored = true
-          })
-          .finally(() => (this.loading = false))
-      )
+      return axios
+        .get(this.expenseUrl)
+        .then(response => {
+          this.expenses = response.data
+        })
+        .catch(error => {
+          this.log(error)
+        })
+        .finally(() => (this.loading = false))
     },
 
     // getExpenseByFood() {

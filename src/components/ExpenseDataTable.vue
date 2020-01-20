@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="incomes"
+    :items="expenses"
     :items-per-page="10"
     sort-by="date"
     style="width: 85%"
@@ -9,12 +9,12 @@
   >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>Incomes</v-toolbar-title>
+        <v-toolbar-title>Expenses</v-toolbar-title>
 
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn color="blue" dark class="mb-2" v-on="on">New Income</v-btn>
+            <v-btn color="blue" dark class="mb-2" v-on="on">New Expense</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -50,12 +50,40 @@
                       ></v-date-picker>
                     </v-menu>
                   </v-col>
+
+                  <v-col cols="12" sm="6" md="4">
+                    <v-menu
+                      v-model="postDueDateMenu"
+                      :close-on-content-click="false"
+                      :nudge-right="50"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          label="Due Date"
+                          readonly
+                          :value="editedItem.dueDate"
+                          outlined
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="editedItem.dueDate"
+                        no-title
+                        @input="postDueDateMenu = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </v-col>
+
                   <v-col cols="12" sm="6" md="4">
                     <v-menu offset-y>
                       <template v-slot:activator="{ on }">
                         <v-select
                           :items="categories"
-                          v-model="editedItem.incomeCategory"
+                          v-model="editedItem.expenseCategory"
                           label="Category"
                           outlined
                         ></v-select>
@@ -81,7 +109,7 @@
                       <template v-slot:activator="{ on }">
                         <v-select
                           :items="statuses"
-                          v-model="editedItem.incomeStatus"
+                          v-model="editedItem.expenseStatus"
                           label="Status"
                           outlined
                         ></v-select>
@@ -116,22 +144,27 @@
 import axios from 'axios'
 
 export default {
-  name: 'IncomeDataTable',
+  name: 'ExpenseDataTable',
 
   data: () => ({
+    rules: {
+      'no-console': 'off'
+    },
     dialog: false,
-    getUrl: '/api/income/getall',
-    postUrl: '/api/income/add',
-    putUrl: 'api/income/update/',
-    deleteUrl: 'api/income/delete/',
+    getUrl: '/api/expense/getall',
+    postUrl: '/api/expense/add',
+    putUrl: 'api/expense/update/',
+    deleteUrl: 'api/expense/delete/',
     postDateMenu: false,
+    postDueDateMenu: false,
     date: null,
+    dueDate: null,
     amount: null,
     event: null,
-    incomeCategory: null,
+    expenseCategory: null,
     status: null,
-    categories: ['BENEFIT', 'LOAN', 'SALARY', 'SALE'],
-    statuses: ['EXPENDABLE', 'SAVINGS'],
+    categories: ['BILLS', 'CLOTHES', 'FOOD', 'PET'],
+    statuses: ['PAID', 'UNPAID'],
 
     headers: [
       {
@@ -139,34 +172,37 @@ export default {
         align: 'left',
         value: 'date'
       },
-      { text: 'Category', value: 'incomeCategory' },
+      { text: 'Category', value: 'expenseCategory' },
       { text: 'Amount', value: 'amount' },
       { text: 'Event', value: 'name' },
-      { text: 'Marked as', value: 'incomeStatus' },
+      { text: 'Marked as', value: 'expenseStatus' },
+      { text: 'Due Date', value: 'dueDate' },
       { text: 'Actions', value: 'action', sortable: false }
     ],
-    incomes: [],
+    expenses: [],
     editedIndex: -1,
     editedItem: {
       id: 0,
       date: null,
-      incomeCategory: '',
+      dueDate: null,
+      expenseCategory: '',
       amount: null,
       name: '',
-      incomeStatus: ''
+      expenseStatus: ''
     },
     defaultItem: {
       date: null,
-      incomeCategory: '',
+      dueDate: null,
+      expenseCategory: '',
       amount: null,
       name: '',
-      incomeStatus: ''
+      expenseStatus: ''
     }
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'New Income' : 'Edit Income'
+      return this.editedIndex === -1 ? 'New Expense' : 'Edit Expense'
     }
   },
 
@@ -177,15 +213,15 @@ export default {
   },
 
   created() {
-    this.fetchIncomes()
+    this.fetchExpenses()
   },
 
   methods: {
-    fetchIncomes() {
+    fetchExpenses() {
       axios
         .get(this.getUrl)
         .then(response => {
-          this.incomes = response.data
+          this.expenses = response.data
         })
         .catch(error => {
           this.log(error)
@@ -194,19 +230,19 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.incomes.indexOf(item)
+      this.editedIndex = this.expenses.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem(item) {
-      confirm('Are you sure you want to delete this income?') &&
+      confirm('Are you sure you want to delete this expense?') &&
         axios
           .delete(this.deleteUrl + item.id)
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchIncomes())
+          .finally(() => this.fetchExpenses())
     },
 
     close() {
@@ -222,10 +258,11 @@ export default {
         axios
           .put(this.putUrl + this.editedItem.id, {
             amount: this.editedItem.amount,
-            incomeCategory: this.editedItem.incomeCategory,
+            expenseCategory: this.editedItem.expenseCategory,
             name: this.editedItem.name,
             date: this.editedItem.date,
-            incomeStatus: this.editedItem.incomeStatus
+            dueDate: this.editedItem.dueDate,
+            expenseStatus: this.editedItem.expenseStatus
           })
           .then(response => {
             this.message = response.data
@@ -233,15 +270,16 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchIncomes())
+          .finally(() => this.fetchExpenses())
       } else {
         axios
           .post(this.postUrl, {
             amount: this.editedItem.amount,
-            incomeCategory: this.editedItem.incomeCategory,
+            expenseCategory: this.editedItem.expenseCategory,
             name: this.editedItem.name,
             date: this.editedItem.date,
-            incomeStatus: this.editedItem.incomeStatus
+            dueDate: this.editedItem.dueDate,
+            expenseStatus: this.editedItem.expenseStatus
           })
           .then(response => {
             this.message = response.data
@@ -249,7 +287,7 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchIncomes())
+          .finally(() => this.fetchExpenses())
       }
       this.close()
     },
