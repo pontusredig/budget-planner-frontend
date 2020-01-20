@@ -8,11 +8,17 @@
 
 <script>
 import axios from 'axios'
+import { eventBus } from '../main.js'
+
 export default {
   name: 'BalanceDisplayer',
 
   created() {
     this.fetchBalances()
+
+    eventBus.$on('updateBalances', () => {
+      this.fetchBalances()
+    })
   },
 
   data: () => ({

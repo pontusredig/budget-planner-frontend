@@ -1,6 +1,6 @@
 <template>
-  <div class="incomes" style="width: 90%">
-    <h1>INCOMES</h1>
+  <div align="center">
+    <h1 class="pb-10">INCOMES</h1>
     <BalanceDisplayer />
     <IncomeDataTable />
   </div>

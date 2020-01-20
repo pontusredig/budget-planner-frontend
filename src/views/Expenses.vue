@@ -1,7 +1,6 @@
 <template>
-  <div class="expenses" style="width: 90%">
-    <h1>EXPENSES</h1>
-
+  <div align="center">
+    <h1 class="pb-10">EXPENSES</h1>
     <BalanceDisplayer />
     <ExpenseDataTable />
 
@@ -27,10 +26,6 @@ import BarChartExpenseCategories from '@/components/charts/BarChartExpenseCatego
 import BarChartIncomeCategories from '@/components/charts/BarChartIncomeCategories'
 
 export default {
-  created() {
-    this.fetchExpenses()
-  },
-
   components: {
     BalanceDisplayer,
     ExpenseDataTable,

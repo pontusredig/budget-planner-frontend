@@ -7,12 +7,17 @@
     style="width: 85%"
     class="elevation-1"
   >
+    <template v-slot:item.dueDate="{ item }">
+      <div :class="dueCheck(item)">{{ item.dueDate }}</div>
+    </template>
+
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>Expenses</v-toolbar-title>
 
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px"
+          >s
           <template v-slot:activator="{ on }">
             <v-btn color="blue" dark class="mb-2" v-on="on">New Expense</v-btn>
           </template>
@@ -129,6 +134,7 @@
         </v-dialog>
       </v-toolbar>
     </template>
+
     <template v-slot:item.action="{ item }">
       <v-icon small class="mr-2" @click="editItem(item)">
         mdi-pencil
@@ -142,6 +148,7 @@
 
 <script>
 import axios from 'axios'
+import { eventBus } from '../main.js'
 
 export default {
   name: 'ExpenseDataTable',
@@ -155,6 +162,7 @@ export default {
     postUrl: '/api/expense/add',
     putUrl: 'api/expense/update/',
     deleteUrl: 'api/expense/delete/',
+    categoriesUrl: 'api/expense/categories',
     postDateMenu: false,
     postDueDateMenu: false,
     date: null,
@@ -163,7 +171,7 @@ export default {
     event: null,
     expenseCategory: null,
     status: null,
-    categories: ['BILLS', 'CLOTHES', 'FOOD', 'PET'],
+    categories: [],
     statuses: ['PAID', 'UNPAID'],
 
     headers: [
@@ -213,7 +221,7 @@ export default {
   },
 
   created() {
-    this.fetchExpenses()
+    this.fetchExpenses(), this.fetchCategories()
   },
 
   methods: {
@@ -222,6 +230,18 @@ export default {
         .get(this.getUrl)
         .then(response => {
           this.expenses = response.data
+        })
+        .catch(error => {
+          this.log(error)
+        })
+        .finally(() => (this.loading = false))
+    },
+
+    fetchCategories() {
+      axios
+        .get(this.categoriesUrl)
+        .then(response => {
+          this.categories = response.data
         })
         .catch(error => {
           this.log(error)
@@ -242,7 +262,7 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchExpenses())
+          .finally(() => this.fetchExpenses(), eventBus.$emit('updateBalances'))
     },
 
     close() {
@@ -270,7 +290,7 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchExpenses())
+          .finally(() => this.fetchExpenses(), eventBus.$emit('updateBalances'))
       } else {
         axios
           .post(this.postUrl, {
@@ -287,10 +307,20 @@ export default {
           .catch(error => {
             this.log(error)
           })
-          .finally(() => this.fetchExpenses())
+          .finally(() => this.fetchExpenses(), eventBus.$emit('updateBalances'))
       }
       this.close()
     },
+
+    dueCheck(item) {
+      if (
+        item.expenseStatus.localeCompare('UNPAID') === 0 &&
+        Date.parse(item.dueDate) < Date.now()
+      )
+        return 'red--text font-weight-bold'
+      else return ''
+    },
+
     log(obj) {
       let parsedObject = JSON.parse(JSON.stringify(obj))
       // eslint-disable-next-line no-console
