@@ -12,7 +12,7 @@ export default {
     }
   },
   created() {
-     this.setColors()
+    this.setColors()
   },
   methods: {
     setColors() {
@@ -26,14 +26,15 @@ export default {
           this.color.push(this.backgroundColor[2])
         } else if (this.outer[2][i] == this.labels[3].toUpperCase()) {
           this.color.push(this.backgroundColor[3])
-      } }
-                // eslint-disable-next-line no-console
-      console.log(this.color)
+        }
+      }
+      // eslint-disable-next-line no-console
+      // console.log(this.color)
     }
   },
   mounted() {
     // this.renderChart(this.data, this.options, ChartDataLabels)
-  
+
     this.renderChart(
       {
         labels: this.labels,
@@ -42,11 +43,11 @@ export default {
           // Outer pie data starts
           {
             data: this.outer[0],
+            // backgroundColor: this.backgroundColor,
             backgroundColor: this.color,
             hoverbackgroundColor: this.color,
             // label: 'Outer pie',
-            labels: this.outer[1],
-            // labels: ['ÄTA','BAJSA','KISSA'],
+            labels: this.outer[1]
             // datalabels: {
             //   // color: 'yellow'
             // }
@@ -54,20 +55,18 @@ export default {
           // Outer pie data ends
           // Inner pie data starts
           {
-            // data: [8000, 2000, 1500, 1000],
             data: this.innerData,
-            // label: 'Inner pie',
             labels: this.labels,
             backgroundColor: this.backgroundColor,
-            hoverbackgroundColor:  this.backgroundColor,
+            hoverbackgroundColor: this.backgroundColor
 
-            datalabels: {
-              innerLabels: {
-                // title: {
-                // color: 'green'
-                // }
-              }
-            }
+            // datalabels: {
+            //   innerLabels: {
+            //     // title: {
+            //     // color: 'green'
+            //     // }
+            //   }
+            // }
           }
           // Inner pie data ends
         ]
@@ -84,7 +83,7 @@ export default {
         },
         title: {
           display: true,
-          text: 'Expense Summary',
+          text: 'Summary of expenses the last 3 months',
           fontColor: 'black',
           fontSize: 18
         },
@@ -101,7 +100,6 @@ export default {
               return context.dataset.backgroundColor
             },
             font: {
-              // weight: 'bold',
               size: '12'
             },
             formatter: function(value, ctx) {
