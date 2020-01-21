@@ -13,7 +13,7 @@
         <HorizontalChart :totalValues="totalValues" />
 
         <hr />
-      </div> -->
+      </div>-->
     </div>
   </div>
 </template>
