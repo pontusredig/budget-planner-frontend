@@ -1,41 +1,22 @@
 <template>
-  <<<<<<<
-    HEAD
-    <div
-    class="expenses"
-    style="width: 90%"
-  >
-    <h1>EXPENSES</h1>
+  <div align="center">
+    <h1 class="pb-10">EXPENSES</h1>
+    <BalanceDisplayer />
+    <ExpenseDataTable />
 
-    =======
-    <div align="center">
-      <h1 class="pb-10">EXPENSES</h1>
-      >>>>>>> f04da8853950fb35f8b1de0b512cba86bf0634c3
-      <BalanceDisplayer />
-      <ExpenseDataTable />
+    <div v-if="isNull" class="chart-container">
+      <HorizontalChart :totalValues="totalValues" />
 
-      <div
-        v-if="isNull"
-        class="chart-container"
-      >
-        <HorizontalChart :totalValues="totalValues" />
-
-        <hr />
-      </div>
-      <v-btn v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
-      <div
-        v-if="isExpenses"
-        class="chart-container"
-      >
-        <BarChartExpenseCategories :expenseCategory="expenseCategory" />
-      </div>
-      <div
-        v-else
-        class="chart-container"
-      >
-        <BarChartIncomeCategories :incomeCategory="incomeCategory" />
-      </div>
+      <hr />
     </div>
+    <v-btn v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
+    <div v-if="isExpenses" class="chart-container">
+      <BarChartExpenseCategories :expenseCategory="expenseCategory" />
+    </div>
+    <div v-else class="chart-container">
+      <BarChartIncomeCategories :incomeCategory="incomeCategory" />
+    </div>
+  </div>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div align="center">
     <v-row align="center" justify="center">
       <v-card width="400" class="mx-auto mt-5">
         <v-card-title class="pb-0">
@@ -34,7 +34,7 @@
         </v-card-actions>
       </v-card>
     </v-row>
-    <p>{{ error }}</p>
+    <p style="color:red">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -48,7 +48,8 @@ export default {
       username: '',
       password: '',
       showPassword: false,
-      error: null
+      error: null,
+      errorMessage: null
     }
   },
   methods: {
@@ -61,8 +62,11 @@ export default {
         .then(() => {
           this.$router.push({ name: 'dashboard' })
         })
-        .catch(err => {
-          this.error = err.response.data
+        .catch(error => {
+          if (error.response.status === 401) {
+            this.errorMessage = 'Login failed: Invalid username or password.'
+          }
+          this.log(error.response.data)
         })
     },
     register() {
@@ -77,11 +81,14 @@ export default {
           alert(this.message)
         })
         .catch(error => {
-          // eslint-disable-next-line no-console
-          console.log(error)
-          this.errored = true
+          this.log(error)
         })
         .finally(() => this.$router.push({ name: 'login' }))
+    },
+    log(obj) {
+      let parsedObject = JSON.parse(JSON.stringify(obj))
+      // eslint-disable-next-line no-console
+      console.log(parsedObject)
     }
   }
 }

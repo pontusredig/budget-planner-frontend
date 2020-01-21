@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <v-container>
     <v-row align="center" justify="center">
@@ -24,6 +23,7 @@
             label="Password"
             type="password"
             v-model="password"
+            :rules="passwordRules"
             required
           ></v-text-field>
 
@@ -31,6 +31,7 @@
             label="Re-enter password"
             type="password"
             v-model="matchingPassword"
+            :rules="[passwordConfirmationRule]"
             required
           ></v-text-field>
           <p>
@@ -78,18 +79,42 @@ export default {
     email: '',
     emailRules: [
       value => !!value || 'Email is required.',
-      value => value.indexOf('@') !== 0 || 'Email should have a username.',
-      value => value.includes('@') || 'Email should include an @ symbol.',
       value =>
-        value.indexOf('.') - value.indexOf('@') > 1 ||
+        (value && value.indexOf('@') !== 0) || 'Email should have a username.',
+      value =>
+        (value && value.includes('@')) || 'Email should include an @ symbol.',
+      value =>
+        (value && value.indexOf('.') - value.indexOf('@') > 1) ||
         'Email should contain a valid domain.',
-      value => value.includes('.') || 'Email should include a period symbol.',
       value =>
-        value.indexOf('.') <= value.length - 3 ||
+        (value && value.includes('.')) ||
+        'Email should include a period symbol.',
+      value =>
+        (value && value.indexOf('.') <= value.length - 3) ||
         'Email should contain a valid domain extension.'
     ],
-    formValidity: false
+    formValidity: false,
+
+    passwordRules: [
+      value => {
+        // eslint-disable-next-line no-useless-escape
+        const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+        return (
+          pattern.test(value) ||
+          'Password must contain: At least 8 characters with a capital letter, a number, and a special character.'
+        )
+      }
+    ]
   }),
+
+  computed: {
+    passwordConfirmationRule() {
+      return (
+        this.password === this.matchingPassword || 'Passwords does not match.'
+      )
+    }
+  },
+
   methods: {
     resetForm() {
       this.$refs.signUpForm.reset()
