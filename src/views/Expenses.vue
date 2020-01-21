@@ -1,50 +1,28 @@
 <template>
-  <<<<<<<
-    HEAD
-    <div
-    class="expenses"
-    style="width: 90%"
-  >
+  <div class="expenses" style="width: 90%">
     <h1>EXPENSES</h1>
-
-    =======
     <div align="center">
       <h1 class="pb-10">EXPENSES</h1>
-      >>>>>>> f04da8853950fb35f8b1de0b512cba86bf0634c3
       <BalanceDisplayer />
       <ExpenseDataTable />
 
-      <div
+      <!-- <div
         v-if="isNull"
         class="chart-container"
       >
         <HorizontalChart :totalValues="totalValues" />
 
         <hr />
-      </div>
-      <v-btn v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
-      <div
-        v-if="isExpenses"
-        class="chart-container"
-      >
-        <BarChartExpenseCategories :expenseCategory="expenseCategory" />
-      </div>
-      <div
-        v-else
-        class="chart-container"
-      >
-        <BarChartIncomeCategories :incomeCategory="incomeCategory" />
-      </div>
+      </div> -->
     </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios'
 import BalanceDisplayer from '@/components/BalanceDisplayer'
 import ExpenseDataTable from '@/components/ExpenseDataTable'
-import HorizontalChart from '@/components/charts/HorizontalChart'
-import BarChartExpenseCategories from '@/components/charts/BarChartExpenseCategories'
-import BarChartIncomeCategories from '@/components/charts/BarChartIncomeCategories'
+// import HorizontalChart from '@/components/charts/HorizontalChart'
 
 export default {
   created() {
@@ -54,9 +32,9 @@ export default {
     const b = this.getAllIncomes()
     const c = this.getAllBalances()
     Promise.all([a, b, c]).then(() => {
-      this.getTotal()
-      this.getDataByIncomeCategory()
-      this.getDataByExpenseCategory()
+      // this.getTotal()
+      // this.getDataByIncomeCategory()
+      // this.getDataByExpenseCategory()
     })
   },
   computed: {
@@ -71,10 +49,8 @@ export default {
 
   components: {
     BalanceDisplayer,
-    ExpenseDataTable,
-    HorizontalChart,
-    BarChartExpenseCategories,
-    BarChartIncomeCategories
+    ExpenseDataTable
+    // HorizontalChart,
   },
 
   data: () => ({
@@ -86,9 +62,6 @@ export default {
     expenses: [],
     balances: [],
     totalValues: null,
-    incomeCategory: null,
-    expenseCategory: null,
-    isExpenses: false,
 
     options: {
       responsive: true,
@@ -187,67 +160,26 @@ export default {
         })
         .finally(() => (this.loading = false))
     },
-    getDataByExpenseCategory() {
-      this.expenseCategory = []
-      let bills = 0
-      let food = 0
-      let pet = 0
-      let clothes = 0
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
-        if (cat == 'BILLS') {
-          bills += amount
-        } else if (cat == 'FOOD') {
-          food += amount
-        } else if (cat == 'PET') {
-          pet += amount
-        } else if (cat == 'CLOTHES') {
-          clothes += amount
-        }
-      }
-      this.expenseCategory.push(bills, food, pet, clothes)
-    },
-    getDataByIncomeCategory() {
-      this.incomeCategory = []
-      let salary = 0
-      let benefit = 0
-      let sale = 0
-      let loan = 0
-      for (let index = 0; index < this.incomes.length; index++) {
-        let cat = this.incomes[index].incomeCategory
-        let amount = Number(this.incomes[index].amount)
-        if (cat == 'SALARY') {
-          salary += amount
-        } else if (cat == 'BENEFIT') {
-          benefit += amount
-        } else if (cat == 'SALE') {
-          sale += amount
-        } else if (cat == 'LOAN') {
-          loan += amount
-        }
-      }
-      this.incomeCategory.push(salary, benefit, sale, loan)
-    },
-    getTotal() {
-      this.totalValues = []
-      this.chartValues = []
-      let income = 0
-      let expense = 0
-      let balance = 0
 
-      for (let i in this.incomes) {
-        income += Number(this.incomes[i].amount)
-      }
-      for (let i in this.expenses) {
-        expense += Number(this.expenses[i].amount)
-      }
-      for (let i in this.expenses) {
-        balance += Number(this.balances[i].amount)
-      }
+    // getTotal() {
+    //   this.totalValues = []
+    //   this.chartValues = []
+    //   let income = 0
+    //   let expense = 0
+    //   let balance = 0
 
-      this.totalValues.push(balance, income, expense)
-    },
+    //   for (let i in this.incomes) {
+    //     income += Number(this.incomes[i].amount)
+    //   }
+    //   for (let i in this.expenses) {
+    //     expense += Number(this.expenses[i].amount)
+    //   }
+    //   for (let i in this.expenses) {
+    //     balance += Number(this.balances[i].amount)
+    //   }
+
+    //   this.totalValues.push(balance, income, expense)
+    // },
     log(obj) {
       var parsedobj = JSON.parse(JSON.stringify(obj))
       // eslint-disable-next-line no-console

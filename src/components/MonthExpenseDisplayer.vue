@@ -1,85 +1,41 @@
 <template>
   <div>
-    {{this.month + ' ' + this.year}}
+    {{ this.month + ' ' + this.year }}
     <v-container class="grey lighten-5">
-
       <v-row no-gutters>
-        <v-col
-          cols="3"
-          class="flex-grow-0 flex-shrink-0"
-        >
-          <v-card
-            class="pa-2"
-            outlined
-            tile
-          >
+        <v-col cols="3" class="flex-grow-0 flex-shrink-0">
+          <v-card class="pa-2" outlined tile>
             Expendable amount
           </v-card>
         </v-col>
-        <v-col
-          cols="3"
-          class="flex-grow-0 flex-shrink-0"
-        >
-          <v-card
-            class="pa-2"
-            outlined
-            tile
-          >
-            Expenses in {{this.month + ' ' + this.year}}
+        <v-col cols="3" class="flex-grow-0 flex-shrink-0">
+          <v-card class="pa-2" outlined tile>
+            Expenses in {{ this.month + ' ' + this.year }}
           </v-card>
         </v-col>
-        <v-col
-          cols="3"
-          class="flex-grow-0 flex-shrink-0"
-        >
-          <v-card
-            class="pa-2"
-            outlined
-            tile
-          >
+        <v-col cols="3" class="flex-grow-0 flex-shrink-0">
+          <v-card class="pa-2" outlined tile>
             Savings Amount
           </v-card>
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col
-          cols="3"
-          class="flex-grow-0 flex-shrink-0"
-        >
-          <v-card
-            class="pa-2"
-            outlined
-            tile
-          >
-            {{this.expendableBal}}
+        <v-col cols="3" class="flex-grow-0 flex-shrink-0">
+          <v-card class="pa-2" outlined tile>
+            {{ this.expendableBal }}
           </v-card>
         </v-col>
-        <v-col
-          cols="3"
-          class="flex-grow-0 flex-shrink-0"
-        >
-          <v-card
-            class="pa-2"
-            outlined
-            tile
-          >
-            {{  this.sumExpensesForCurrentMonth }}
+        <v-col cols="3" class="flex-grow-0 flex-shrink-0">
+          <v-card class="pa-2" outlined tile>
+            {{ this.sumExpensesForCurrentMonth }}
           </v-card>
         </v-col>
-        <v-col
-          cols="3"
-          class="flex-grow-0 flex-shrink-0"
-        >
-          <v-card
-            class="pa-2"
-            outlined
-            tile
-          >
-            {{this.savingsBal}}
+        <v-col cols="3" class="flex-grow-0 flex-shrink-0">
+          <v-card class="pa-2" outlined tile>
+            {{ this.savingsBal }}
           </v-card>
         </v-col>
       </v-row>
-
     </v-container>
   </div>
 </template>
@@ -94,12 +50,6 @@ export default {
     const a = this.fetchBalances()
     Promise.all([a]).then(() => {
       this.getMonthNames()
-      // eslint-disable-next-line no-console
-      console.log('test' + this.savingsBal)
-      // eslint-disable-next-line no-console
-      console.log('test' + this.expendableBal)
-      // eslint-disable-next-line no-console
-      console.log('test' + this.unpaidExp)
     })
   },
 
