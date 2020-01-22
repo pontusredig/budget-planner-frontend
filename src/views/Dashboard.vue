@@ -46,7 +46,7 @@
       <BarChartIncomeCategories :incomeCategory="incomeCategory" />
     </div>
 
-    <div class="chart-container">
+    <div v-if="isBarChartNull" class="chart-container">
       <BarChart
         :incomesByMonth="incomesByMonth"
         :expensesByMonth="expensesByMonth"
@@ -72,8 +72,8 @@ export default {
     const c = this.getExpensesBetweenDates() // <---- Expenses the latest 3 months
     const d = this.getBalanceExpendable()
     Promise.all([a, b, c, d]).then(() => {
-      this.getInnerDataByExpenseCategory()
       this.getOuterDataByExpenseCategory()
+      this.getInnerDataByExpenseCategory()
       this.getExpensesForMonth()
       this.getDataByIncomeCategory()
       this.getDataByExpenseCategory()
@@ -92,6 +92,13 @@ export default {
     },
     isNull() {
       if (this.outer != null && this.innerData != null) {
+        return true
+      } else {
+        return false
+      }
+    },
+    isBarChartNull() {
+      if (this.incomesByMonth != null && this.balancesByMonth != null && this.expensesByMonth != null) {
         return true
       } else {
         return false
@@ -144,9 +151,9 @@ export default {
       // isHidden: false,
       incomeCategory: null,
       expenseCategory: null,
-      balancesByMonth: [],
-      incomesByMonth: [],
-      expensesByMonth: [],
+      balancesByMonth: null,
+      incomesByMonth: null,
+      expensesByMonth: null,
       isExpenses: false
     }
   },
@@ -212,12 +219,17 @@ export default {
       )
     },
     getBalancesByMonth() {
+      this.balancesByMonth = []
+      let date = this.dateFormat(this.getCurrentDate())
+      let currentYear = date.substring(0, 4)
+
       this.months.forEach(month => {
         let sum = 0
         this.balances.forEach(bal => {
+          let balanceYear = bal.date.substring(0, 4)
           let balanceMonth = bal.date.substring(5, 7)
           let amount = bal.amount
-          if (month == balanceMonth && Math.max(bal.id)) {
+          if (month == balanceMonth && Math.max(bal.id) && balanceYear == currentYear) {
             sum = Number(amount)
           }
         })
@@ -225,9 +237,14 @@ export default {
       })
     },
     getExpensesByMonth() {
+      this.expensesByMonth = []
+      let date = this.dateFormat(this.getCurrentDate())
+      let currentYear = date.substring(0, 4)
+
       this.months.forEach(month => {
         let sum = 0
         this.expenses.forEach(exp => {
+            let expenseYear = exp.date.substring(0, 4)
           let backup = exp.date.substring(5, 7)
           let expenseMonth
           if (exp.dueDate == null) {
@@ -236,7 +253,7 @@ export default {
             expenseMonth = exp.dueDate.substring(5, 7)
           }
           let amount = exp.amount
-          if (month == expenseMonth) {
+          if (month == expenseMonth && expenseYear == currentYear) {
             sum += Number(amount)
           }
         })
@@ -245,12 +262,16 @@ export default {
     },
 
     getIncomesByMonth() {
+      this.incomesByMonth = []
+      let date = this.dateFormat(this.getCurrentDate())
+      let currentYear = date.substring(0, 4)
       this.months.forEach(month => {
         let sum = 0
         this.incomes.forEach(inc => {
+        let incomeYear = inc.date.substring(0, 4)
           let incomeMonth = inc.date.substring(5, 7)
           let amount = inc.amount
-          if (month == incomeMonth) {
+          if (month == incomeMonth && incomeYear == currentYear) {
             sum += Number(amount)
           }
         })
@@ -304,13 +325,14 @@ export default {
     },
     getInnerDataByExpenseCategory() {
       this.innerData = []
+      this.log(this.expensesDates)
       let bills = 0
       let food = 0
       let pet = 0
       let clothes = 0
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
+      for (let index = 0; index < this.expensesDates.length; index++) {
+        let cat = this.expensesDates[index].expenseCategory
+        let amount = Number(this.expensesDates[index].amount)
         if (cat == 'BILLS') {
           bills += amount
         } else if (cat == 'FOOD') {
