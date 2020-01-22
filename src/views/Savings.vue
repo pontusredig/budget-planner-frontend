@@ -11,29 +11,25 @@
         <v-sheet color="rgba(0, 0, 0, .12)">
           <v-sparkline
             label-size="12px"
-            :value="savings.amount"
+            :value="savings"
             color="rgba(255, 255, 255, .7)"
             height="100"
             padding="24"
             stroke-linecap="round"
             smooth
+            :auto-draw="!!savings.length"
           >
-            <template slot="label" slot-scope="item">
-              ${{ item.savings.amount }}
-            </template>
+            >
           </v-sparkline>
         </v-sheet>
       </v-card-text>
-      <p>hej{{ savings }}</p>
       <v-card-text>
-        <div class="display-1 font-weight-thin">Savings over time</div>
+        <div class="display-1 font-weight-thin">
+          Current savings: {{ currentSavings }}
+        </div>
       </v-card-text>
 
       <v-divider></v-divider>
-
-      <v-card-actions class="justify-center">
-        <v-btn block text>Go to Report</v-btn>
-      </v-card-actions>
     </v-card>
   </div>
 </template>
@@ -52,8 +48,10 @@ export default {
   },
 
   data: () => ({
-    getSavingsUrl: '/api/balance/getbycategory/SAVINGS',
-    savings: []
+    getSavingsUrl: '/api/balance/getlatestsavings',
+    savings: [],
+    currentSavings: null,
+    myAutoDraw: false
   }),
   methods: {
     fetchSavings() {
@@ -61,6 +59,7 @@ export default {
         .get(this.getSavingsUrl)
         .then(response => {
           this.savings = response.data
+          this.currentSavings = this.savings[this.savings.length - 1]
         })
         .catch(error => {
           this.log(error)
