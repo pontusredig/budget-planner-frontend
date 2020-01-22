@@ -1,9 +1,40 @@
 <template>
-  <v-card style="width: 20%">
-    <p>Unpaid expenses: {{ unpaidExp }}</p>
-    <p>Balance: {{ expendableBal }}</p>
-    <p>Savings: {{ savingsBal }}</p>
-  </v-card>
+  <v-container style="width: 50%">
+    <v-row no-gutters>
+      <v-col>
+        <v-card class="pa-2" outlined tile>
+          Expendable amount
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card class="pa-2" outlined tile>
+          Unpaid expenses
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card class="pa-2" outlined tile>
+          Savings
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col>
+        <v-card class="pa-2" outlined tile>
+          {{ expendableBal }}
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card class="pa-2" outlined tile>
+          {{ unpaidExp }}
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card class="pa-2" outlined tile>
+          {{ savingsBal }}
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
