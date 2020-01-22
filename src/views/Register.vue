@@ -47,14 +47,14 @@
           ></v-checkbox>
           <v-btn
             @click="register"
-            color="primary"
+            color="success"
             class="mr-4"
             :disabled="!formValidity"
             >Submit</v-btn
           >
-          <v-btn color="error" @click="resetForm">Reset</v-btn>
+          <v-btn color="error" class="mr-4" @click="resetForm">Reset</v-btn>
+          <v-btn color="primary" class="mr-4" to="/login">Back</v-btn>
         </v-form>
-        <p>{{ error }}</p>
       </v-col>
     </v-row>
   </v-container>
@@ -123,8 +123,8 @@ export default {
       axios
         .post('/api/users/register', {
           email: this.email,
+          name: this.name,
           password: this.password
-          //  matchingPassword: this.matchingPassword
         })
         .then(response => {
           this.message = response.data
