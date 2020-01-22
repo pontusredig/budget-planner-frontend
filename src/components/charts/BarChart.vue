@@ -4,7 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 export default {
   extends: Bar,
-  props: ['incomesByMonth', 'expensesByMonth'],
+  props: ['incomesByMonth', 'expensesByMonth', 'balancesByMonth'],
   mounted() {
     // Overwriting base render method with actual data.
     this.renderChart(
@@ -28,7 +28,7 @@ export default {
             label: 'Balance',
             backgroundColor: '#3e95cd',
             // data: [15000, 13000, 12, 39, 40, 40, 39, 80, 40, 20, 12, 11]
-            data: [15000, 13000, 12, 39, 40, 40, 39, 80, 40, 20, 12, 11]
+            data: this.balancesByMonth
           },
           {
             label: 'Income',
