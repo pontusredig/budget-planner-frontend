@@ -24,10 +24,34 @@
         :innerData="innerData"
         :outer="outer"
       />
+      <hr />
+    </div>
+
+    <div align="right">
+      <v-btn v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
+    </div>
+
+    <div
+      v-if="isExpenses"
+      class="chart-container"
+    >
+      <h2 align="left">Expense</h2>
+      <BarChartExpenseCategories :expenseCategory="expenseCategory" />
+    </div>
+    <div
+      v-else
+      class="chart-container"
+    >
+      <h2 align="left">Income</h2>
+      <BarChartIncomeCategories :incomeCategory="incomeCategory" />
     </div>
 
     <div class="chart-container">
-      <BarChart />
+      <BarChart
+        :incomesByMonth="incomesByMonth"
+        :expensesByMonth="expensesByMonth"
+        :balancesByMonth="balancesByMonth"
+      />
     </div>
   </div>
 </template>
@@ -38,15 +62,24 @@ import BarChart from '@/components/charts/BarChart.vue'
 import ExpensePie from '@/components/charts/ExpensePie'
 import BalanceDisplayer from '@/components/BalanceDisplayer'
 import MonthExpenseDisplayer from '@/components/MonthExpenseDisplayer'
+import BarChartExpenseCategories from '@/components/charts/BarChartExpenseCategories'
+import BarChartIncomeCategories from '@/components/charts/BarChartIncomeCategories'
 
 export default {
   created() {
-    // const a = this.getAllExpenses() <---- All Expenses
-    const a = this.getExpensesBetweenDates() // <---- Expenses the latest 3 months
+    const a = this.getAllExpenses() //<---- All Expenses
     const b = this.getAllIncomes()
-    Promise.all([a, b]).then(() => {
+    const c = this.getExpensesBetweenDates() // <---- Expenses the latest 3 months
+    const d = this.getBalanceExpendable()
+    Promise.all([a, b, c, d]).then(() => {
       this.getInnerDataByExpenseCategory()
-      this.getOuterDataByExpenseCategory(), this.getExpensesForMonth()
+      this.getOuterDataByExpenseCategory()
+      this.getExpensesForMonth()
+      this.getDataByIncomeCategory()
+      this.getDataByExpenseCategory()
+      this.getExpensesByMonth()
+      this.getIncomesByMonth()
+      this.getBalancesByMonth()
     })
   },
 
@@ -69,26 +102,52 @@ export default {
     BarChart,
     ExpensePie,
     BalanceDisplayer,
-    MonthExpenseDisplayer
+    MonthExpenseDisplayer,
+    BarChartExpenseCategories,
+    BarChartIncomeCategories
   },
   name: 'DashboardPage',
   data() {
     return {
+      months: [
+        '01',
+        '02',
+        '03',
+        '04',
+        '05',
+        '06',
+        '07',
+        '08',
+        '09',
+        '10',
+        '11',
+        '12'
+      ],
       incomeUrl: '/api/income/getall',
       expenseUrl: '/api/expense/getall',
+      balanceUrl: '/api/balance/getbycategory/EXPENDABLE',
       expenseDatesUrl: null,
-      startDate: null,
-      endDate: null,
+
+      balances: [],
       incomes: [],
       expenses: [],
+      expensesDates: [],
+      startDate: null,
+      endDate: null,
       innerData: null,
       outerData: [],
       outerDataLabels: [],
       outerDataCategories: [],
       outer: null,
       expensesForCurrentMonth: null,
-      sumExpensesForCurrentMonth: null
+      sumExpensesForCurrentMonth: null,
       // isHidden: false,
+      incomeCategory: null,
+      expenseCategory: null,
+      balancesByMonth: [],
+      incomesByMonth: [],
+      expensesByMonth: [],
+      isExpenses: false
     }
   },
   methods: {
@@ -120,13 +179,29 @@ export default {
         .finally(() => (this.loading = false))
     },
 
+    getBalanceExpendable() {
+      return axios
+        .get(this.balanceUrl)
+        .then(response => {
+          this.balances = response.data
+        })
+        .catch(error => {
+          this.log(error)
+        })
+        .finally(() => (this.loading = false))
+    },
+
     getExpensesBetweenDates() {
-      this.setDateUrl()
+      let today = this.getCurrentDate()
+      this.endDate = this.dateFormat(today)
+      this.startDate = this.dateFormat(this.getDateMonthsBefore(today, 3))
+      this.expenseDatesUrl =
+        '/api/expense/getbetweendates/' + this.startDate + '/' + this.endDate
       return (
         axios
           .get(this.expenseDatesUrl)
           .then(response => {
-            this.expenses = response.data
+            this.expensesDates = response.data
           })
           // eslint-disable-next-line no-unused-vars
           .catch(error => {
@@ -136,12 +211,51 @@ export default {
           .finally(() => (this.loading = false))
       )
     },
-    setDateUrl() {
-      let today = this.getCurrentDate()
-      this.endDate = this.dateFormat(today)
-      this.startDate = this.dateFormat(this.getDateMonthsBefore(today, 3))
-      this.expenseDatesUrl =
-        '/api/expense/getbetweendates/' + this.startDate + '/' + this.endDate
+    getBalancesByMonth() {
+      this.months.forEach(month => {
+        let sum = 0
+        this.balances.forEach(bal => {
+          let balanceMonth = bal.date.substring(5, 7)
+          let amount = bal.amount
+          if (month == balanceMonth && Math.max(bal.id)) {
+            sum = Number(amount)
+          }
+        })
+        this.balancesByMonth.push(sum)
+      })
+    },
+    getExpensesByMonth() {
+      this.months.forEach(month => {
+        let sum = 0
+        this.expenses.forEach(exp => {
+          let backup = exp.date.substring(5, 7)
+          let expenseMonth
+          if (exp.dueDate == null) {
+            expenseMonth = backup
+          } else {
+            expenseMonth = exp.dueDate.substring(5, 7)
+          }
+          let amount = exp.amount
+          if (month == expenseMonth) {
+            sum += Number(amount)
+          }
+        })
+        this.expensesByMonth.push(sum)
+      })
+    },
+
+    getIncomesByMonth() {
+      this.months.forEach(month => {
+        let sum = 0
+        this.incomes.forEach(inc => {
+          let incomeMonth = inc.date.substring(5, 7)
+          let amount = inc.amount
+          if (month == incomeMonth) {
+            sum += Number(amount)
+          }
+        })
+        this.incomesByMonth.push(sum)
+      })
     },
     dateFormat(date) {
       let month = date.getMonth() + 1
@@ -176,7 +290,6 @@ export default {
       let date = this.dateFormat(this.getCurrentDate())
       let currentYear = date.substring(0, 4)
       let currentMonth = date.substring(5, 7)
-
       this.expensesForCurrentMonth = []
       for (let index = 0; index < this.expenses.length; index++) {
         let expenseYear = this.expenses[index].date.substring(0, 4)
@@ -212,40 +325,40 @@ export default {
     },
     getOuterDataByExpenseCategory() {
       this.outer = []
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
-        let name = this.expenses[index].name
+      for (let index = 0; index < this.expensesDates.length; index++) {
+        let cat = this.expensesDates[index].expenseCategory
+        let amount = Number(this.expensesDates[index].amount)
+        let name = this.expensesDates[index].name
         if (cat == 'BILLS') {
           this.outerData.push(amount)
           this.outerDataLabels.push(name)
           this.outerDataCategories.push(cat)
         }
       }
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
-        let name = this.expenses[index].name
+      for (let index = 0; index < this.expensesDates.length; index++) {
+        let cat = this.expensesDates[index].expenseCategory
+        let amount = Number(this.expensesDates[index].amount)
+        let name = this.expensesDates[index].name
         if (cat == 'FOOD') {
           this.outerData.push(amount)
           this.outerDataLabels.push(name)
           this.outerDataCategories.push(cat)
         }
       }
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
-        let name = this.expenses[index].name
+      for (let index = 0; index < this.expensesDates.length; index++) {
+        let cat = this.expensesDates[index].expenseCategory
+        let amount = Number(this.expensesDates[index].amount)
+        let name = this.expensesDates[index].name
         if (cat == 'PET') {
           this.outerData.push(amount)
           this.outerDataLabels.push(name)
           this.outerDataCategories.push(cat)
         }
       }
-      for (let index = 0; index < this.expenses.length; index++) {
-        let cat = this.expenses[index].expenseCategory
-        let amount = Number(this.expenses[index].amount)
-        let name = this.expenses[index].name
+      for (let index = 0; index < this.expensesDates.length; index++) {
+        let cat = this.expensesDates[index].expenseCategory
+        let amount = Number(this.expensesDates[index].amount)
+        let name = this.expensesDates[index].name
         if (cat == 'CLOTHES') {
           this.outerData.push(amount)
           this.outerDataLabels.push(name)
@@ -258,7 +371,48 @@ export default {
         this.outerDataCategories
       )
     },
-
+    getDataByExpenseCategory() {
+      this.expenseCategory = []
+      let bills = 0
+      let food = 0
+      let pet = 0
+      let clothes = 0
+      for (let index = 0; index < this.expenses.length; index++) {
+        let cat = this.expenses[index].expenseCategory
+        let amount = Number(this.expenses[index].amount)
+        if (cat == 'BILLS') {
+          bills += amount
+        } else if (cat == 'FOOD') {
+          food += amount
+        } else if (cat == 'PET') {
+          pet += amount
+        } else if (cat == 'CLOTHES') {
+          clothes += amount
+        }
+      }
+      this.expenseCategory.push(bills, food, pet, clothes)
+    },
+    getDataByIncomeCategory() {
+      this.incomeCategory = []
+      let salary = 0
+      let benefit = 0
+      let sale = 0
+      let loan = 0
+      for (let index = 0; index < this.incomes.length; index++) {
+        let cat = this.incomes[index].incomeCategory
+        let amount = Number(this.incomes[index].amount)
+        if (cat == 'SALARY') {
+          salary += amount
+        } else if (cat == 'BENEFIT') {
+          benefit += amount
+        } else if (cat == 'SALE') {
+          sale += amount
+        } else if (cat == 'LOAN') {
+          loan += amount
+        }
+      }
+      this.incomeCategory.push(salary, benefit, sale, loan)
+    },
     total: function(item) {
       if (!item) {
         return 0
