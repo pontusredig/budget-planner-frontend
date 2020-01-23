@@ -1,26 +1,50 @@
 <template>
   <v-container style="width: 50%">
-    {{ this.month + ' ' + this.year }}
+    <h2 style="display: inline-block">Expenses in: </h2>
     <v-row no-gutters>
       <v-col>
-        <v-card class="pa-2" outlined tile>Expendable amount</v-card>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >{{ this.lastMonth + ' ' + this.lastYear   }}</v-card>
       </v-col>
       <v-col>
-        <v-card class="pa-2" outlined tile>Expenses in {{ this.month + ' ' + this.year }}</v-card>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >{{ this.month + ' ' + this.year }}</v-card>
       </v-col>
       <v-col>
-        <v-card class="pa-2" outlined tile>Savings Amount</v-card>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >{{ this.nextMonth  + ' ' + this.nextYear}}</v-card>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <v-card class="pa-2" outlined tile>{{ this.expendableBal }}</v-card>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >{{ this.sumExpensesForLastMonth  }}</v-card>
       </v-col>
       <v-col>
-        <v-card class="pa-2" outlined tile>{{ this.sumExpensesForCurrentMonth }}</v-card>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >{{ this.sumExpensesForCurrentMonth }}</v-card>
       </v-col>
       <v-col>
-        <v-card class="pa-2" outlined tile>{{ this.savingsBal }}</v-card>
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >{{ this.sumExpensesForNextMonth }}</v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -30,7 +54,11 @@
 import axios from 'axios'
 export default {
   name: 'MonthExpense',
-  props: ['sumExpensesForCurrentMonth'],
+  props: [
+    'sumExpensesForCurrentMonth',
+    'sumExpensesForLastMonth',
+    'sumExpensesForNextMonth'
+  ],
   created() {
     // this.fetchBalances(), this.getMonthNames(), this.test()
     const a = this.fetchBalances()
@@ -42,6 +70,11 @@ export default {
   data: () => ({
     year: null,
     month: null,
+    lastYear: null,
+    lastMonth: null,
+    nextYear: null,
+    nextMonth: null,
+
     getSavingsBalUrl: '/api/balance/getcurrent/SAVINGS',
     getExpendableBalUrl: '/api/balance/getcurrent/EXPENDABLE',
     getUnpaidExpensesUrl: '/api/expense/gettotalbystatus/UNPAID',
@@ -73,6 +106,21 @@ export default {
       const d = new Date()
       this.year = d.getFullYear()
       this.month = monthNames[d.getMonth()]
+      let dateNextMonth = new Date(
+        d.getFullYear(),
+        d.getMonth() + 1,
+        d.getDate()
+      )
+      let dateLastMonth = new Date(
+        d.getFullYear(),
+        d.getMonth() - 1,
+        d.getDate()
+      )
+      this.nextMonth = monthNames[dateNextMonth.getMonth()]
+      this.nextYear = dateNextMonth.getFullYear()
+
+      this.lastMonth = monthNames[dateLastMonth.getMonth()]
+      this.lastYear = dateLastMonth.getFullYear()
     },
 
     test() {

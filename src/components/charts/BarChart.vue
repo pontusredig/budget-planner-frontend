@@ -49,7 +49,7 @@ export default {
         maintainAspectRatio: false,
         legend: {
           labels: {
-            fontColor: 'white',
+            fontColor: 'black',
             fontSize: 18
           },
           position: 'bottom'
@@ -57,7 +57,7 @@ export default {
         title: {
           display: true,
           text: 'Budget Summary',
-          fontColor: 'white',
+          fontColor: 'black',
           fontSize: 18
         },
         scales: {

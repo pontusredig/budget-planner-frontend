@@ -8,7 +8,11 @@
 
     <BalanceDisplayer />
     <v-divider />
-    <MonthExpenseDisplayer :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"></MonthExpenseDisplayer>
+    <MonthExpenseDisplayer
+      :sumExpensesForLastMonth="sumExpensesForLastMonth"
+      :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"
+      :sumExpensesForNextMonth="sumExpensesForNextMonth"
+    ></MonthExpenseDisplayer>
     <!-- 
     <div>totalIncomes {{ totalIncomes }}</div>
     <div>totalExpenses {{ totalExpenses }}</div>
@@ -46,7 +50,10 @@
       <BarChartIncomeCategories :incomeCategory="incomeCategory" />
     </div>
 
-    <div v-if="isBarChartNull" class="chart-container">
+    <div
+      v-if="isBarChartNull"
+      class="chart-container"
+    >
       <BarChart
         :incomesByMonth="incomesByMonth"
         :expensesByMonth="expensesByMonth"
@@ -98,7 +105,11 @@ export default {
       }
     },
     isBarChartNull() {
-      if (this.incomesByMonth != null && this.balancesByMonth != null && this.expensesByMonth != null) {
+      if (
+        this.incomesByMonth != null &&
+        this.balancesByMonth != null &&
+        this.expensesByMonth != null
+      ) {
         return true
       } else {
         return false
@@ -146,8 +157,10 @@ export default {
       outerDataLabels: [],
       outerDataCategories: [],
       outer: null,
-      expensesForCurrentMonth: null,
+
       sumExpensesForCurrentMonth: null,
+      sumExpensesForNextMonth: null,
+      sumExpensesForLastMonth: null,
       // isHidden: false,
       incomeCategory: null,
       expenseCategory: null,
@@ -229,7 +242,11 @@ export default {
           let balanceYear = bal.date.substring(0, 4)
           let balanceMonth = bal.date.substring(5, 7)
           let amount = bal.amount
-          if (month == balanceMonth && Math.max(bal.id) && balanceYear == currentYear) {
+          if (
+            month == balanceMonth &&
+            Math.max(bal.id) &&
+            balanceYear == currentYear
+          ) {
             sum = Number(amount)
           }
         })
@@ -244,7 +261,7 @@ export default {
       this.months.forEach(month => {
         let sum = 0
         this.expenses.forEach(exp => {
-            let expenseYear = exp.date.substring(0, 4)
+          let expenseYear = exp.date.substring(0, 4)
           let backup = exp.date.substring(5, 7)
           let expenseMonth
           if (exp.dueDate == null) {
@@ -268,7 +285,7 @@ export default {
       this.months.forEach(month => {
         let sum = 0
         this.incomes.forEach(inc => {
-        let incomeYear = inc.date.substring(0, 4)
+          let incomeYear = inc.date.substring(0, 4)
           let incomeMonth = inc.date.substring(5, 7)
           let amount = inc.amount
           if (month == incomeMonth && incomeYear == currentYear) {
@@ -308,20 +325,44 @@ export default {
       return new Date()
     },
     getExpensesForMonth() {
-      let date = this.dateFormat(this.getCurrentDate())
+      let now = this.getCurrentDate()
+      // let current = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+      this.log(now)
+      // this.log(current)
+      let date = this.dateFormat(now)
       let currentYear = date.substring(0, 4)
       let currentMonth = date.substring(5, 7)
-      this.expensesForCurrentMonth = []
+
+      let dateLastMonth = this.dateFormat(this.getDateMonthsBefore(now, 1))
+      let lastYear = dateLastMonth.substring(0, 4)
+      let lastMonth = dateLastMonth.substring(5, 7)
+
+      // let dateNextMonth = this.dateFormat(now.setMonth(now.getMonth() + 1))
+      let dateNextMonth = this.dateFormat(
+        new Date(now.getFullYear(), now.getMonth() + 2, now.getDate())
+      )
+      let nextMonth = dateNextMonth.substring(5, 7)
+      let nextYear = dateNextMonth.substring(0, 4)
+
+      let expensesForCurrentMonth = []
+      let expensesForNextMonth = []
+      let expensesForLastMonth = []
+
       for (let index = 0; index < this.expenses.length; index++) {
         let expenseYear = this.expenses[index].date.substring(0, 4)
         let expenseMonth = this.expenses[index].date.substring(5, 7)
         // let amount = Number(this.expenses[index].amount)
         if (expenseMonth == currentMonth && expenseYear == currentYear) {
-          this.expensesForCurrentMonth.push(this.expenses[index])
+          expensesForCurrentMonth.push(this.expenses[index])
+        } else if (expenseMonth == lastMonth && expenseYear == lastYear) {
+          expensesForLastMonth.push(this.expenses[index])
+        } else if (expenseMonth == nextMonth && expenseYear == nextYear) {
+          expensesForNextMonth.push(this.expenses[index])
         }
       }
-      // this.log(this.expensesForCurrentMonth)
-      this.sumExpensesForCurrentMonth = this.total(this.expensesForCurrentMonth)
+      this.sumExpensesForCurrentMonth = this.total(expensesForCurrentMonth)
+      this.sumExpensesForLastMonth = this.total(expensesForLastMonth)
+      this.sumExpensesForNextMonth = this.total(expensesForNextMonth)
     },
     getInnerDataByExpenseCategory() {
       this.innerData = []
