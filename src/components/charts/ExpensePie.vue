@@ -14,8 +14,7 @@ export default {
   },
   created() {
     this.setColors()
-    // ,
-    // this.test()
+    // , this.test()
   },
   methods: {
     setColors() {
@@ -31,7 +30,7 @@ export default {
           this.color.push(this.backgroundColor[3])
         }
       }
-      // eslint-disable-next-line no-console
+      // // eslint-disable-next-line no-console
       // console.log(this.color)
     },
     test() {
@@ -93,15 +92,18 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
+          display: false,
+          position: 'bottom',
           labels: {
+            strokeStyle: 'rgb(255, 99, 132)',
+            // boxWidth: 500,
             fontColor: 'black',
             fontSize: 18
-          },
-          position: 'bottom'
+          }
         },
         title: {
           display: true,
-          text: 'Summary of expenses the last 3 months',
+          text: 'Summary of all expenses during the last 3 months',
           fontColor: 'black',
           fontSize: 18
         },

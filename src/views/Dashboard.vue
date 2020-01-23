@@ -28,6 +28,7 @@
         :innerData="innerData"
         :outer="outer"
       />
+      <br>
       <hr />
     </div>
 
@@ -184,8 +185,6 @@ export default {
           })
           .finally(() => (this.loading = false))
       )
-
-      // this.log(this.incomes.amount)
     },
     getAllExpenses() {
       return axios
@@ -326,9 +325,6 @@ export default {
     },
     getExpensesForMonth() {
       let now = this.getCurrentDate()
-      // let current = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-      this.log(now)
-      // this.log(current)
       let date = this.dateFormat(now)
       let currentYear = date.substring(0, 4)
       let currentMonth = date.substring(5, 7)
@@ -337,7 +333,6 @@ export default {
       let lastYear = dateLastMonth.substring(0, 4)
       let lastMonth = dateLastMonth.substring(5, 7)
 
-      // let dateNextMonth = this.dateFormat(now.setMonth(now.getMonth() + 1))
       let dateNextMonth = this.dateFormat(
         new Date(now.getFullYear(), now.getMonth() + 2, now.getDate())
       )
@@ -366,7 +361,6 @@ export default {
     },
     getInnerDataByExpenseCategory() {
       this.innerData = []
-      this.log(this.expensesDates)
       let bills = 0
       let food = 0
       let pet = 0
