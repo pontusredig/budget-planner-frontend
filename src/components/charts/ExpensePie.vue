@@ -8,11 +8,14 @@ export default {
     return {
       labels: ['Bills', 'Food', 'Pet', 'Clothes'],
       backgroundColor: ['#1e9478', '#943d1e', '#1e7594', '#941e75'],
-      color: null
+      color: null,
+      bajs: null
     }
   },
   created() {
     this.setColors()
+    // ,
+    // this.test()
   },
   methods: {
     setColors() {
@@ -30,27 +33,50 @@ export default {
       }
       // eslint-disable-next-line no-console
       // console.log(this.color)
+    },
+    test() {
+      this.bajs = []
+      let outer0 = this.outer[0]
+      let outer1 = this.outer[1]
+      let outer2 = this.outer[2]
+
+      // eslint-disable-next-line no-console
+      console.log(outer0)
+      // eslint-disable-next-line no-console
+      console.log(outer1)
+      // eslint-disable-next-line no-console
+      console.log(outer2)
+      // eslint-disable-next-line no-console
+      console.log(this.innerData)
+
+      // eslint-disable-next-line no-console
+      console.log(outer2[1] == this.labels[0].toUpperCase())
+
+      if (outer2[1] == this.labels[0]) {
+        this.bajs.push(this.backgroundColor[0])
+        // eslint-disable-next-line no-console
+        console.log(this.bajs)
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(this.color)
+      // eslint-disable-next-line no-console
+      console.log(this.labels)
+      // eslint-disable-next-line no-console
+      console.log(this.backgroundColor)
     }
   },
   mounted() {
-    // this.renderChart(this.data, this.options, ChartDataLabels)
-
     this.renderChart(
       {
         labels: this.labels,
-        // backgroundColor: this.backgroundColor,
         datasets: [
           // Outer pie data starts
           {
             data: this.outer[0],
-            // backgroundColor: this.backgroundColor,
             backgroundColor: this.color,
             hoverbackgroundColor: this.color,
-            // label: 'Outer pie',
             labels: this.outer[1]
-            // datalabels: {
-            //   // color: 'yellow'
-            // }
           },
           // Outer pie data ends
           // Inner pie data starts
@@ -59,14 +85,6 @@ export default {
             labels: this.labels,
             backgroundColor: this.backgroundColor,
             hoverbackgroundColor: this.backgroundColor
-
-            // datalabels: {
-            //   innerLabels: {
-            //     // title: {
-            //     // color: 'green'
-            //     // }
-            //   }
-            // }
           }
           // Inner pie data ends
         ]
@@ -110,12 +128,6 @@ export default {
               })
               let percentage = ((value * 100) / sum).toFixed(2) + '%'
               return percentage
-            },
-            innerLabels: {
-              value: {},
-              title: {
-                // color: 'blue'
-              }
             }
           }
         },
