@@ -125,7 +125,7 @@ export default {
     postUrl: '/api/income/add',
     putUrl: 'api/income/update/',
     deleteUrl: 'api/income/delete/',
-    categoriesUrl: 'api/expense/categories',
+    categoriesUrl: 'api/income/categories',
     postDateMenu: false,
     date: null,
     amount: null,
