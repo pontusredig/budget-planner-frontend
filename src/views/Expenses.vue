@@ -1,12 +1,10 @@
 <template>
-  <div class="expenses" style="width: 90%">
-    <h1>EXPENSES</h1>
-    <div align="center">
-      <h1 class="pb-10">EXPENSES</h1>
-      <BalanceDisplayer />
-      <ExpenseDataTable />
+  <div align="center">
+    <h1 class="pb-10">EXPENSES</h1>
+    <BalanceDisplayer />
+    <ExpenseDataTable />
 
-      <!-- <div
+    <!-- <div
         v-if="isNull"
         class="chart-container"
       >
@@ -14,7 +12,6 @@
 
         <hr />
       </div>-->
-    </div>
   </div>
 </template>
 
