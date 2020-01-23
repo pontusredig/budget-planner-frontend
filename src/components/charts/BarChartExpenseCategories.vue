@@ -22,6 +22,7 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
+          display: false,
           labels: {
             fontColor: 'white',
             fontSize: 18
@@ -30,8 +31,8 @@ export default {
         },
         title: {
           display: true,
-          text: 'Budget Summary',
-          fontColor: 'white',
+          text: 'Expense Summary',
+          fontColor: 'black',
           fontSize: 18
         },
         scales: {
@@ -41,7 +42,8 @@ export default {
                 display: false
               },
               ticks: {
-                fontColor: '#e8c3b9'
+                // fontColor: '#e8c3b9'
+                fontColor: 'black'
               }
             }
           ],
@@ -52,7 +54,8 @@ export default {
                 display: true
               },
               ticks: {
-                fontColor: '#e8c3b9'
+                fontColor: 'black'
+                // fontColor: '#e8c3b9'
               }
             }
           ]

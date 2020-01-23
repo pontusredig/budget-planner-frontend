@@ -95,8 +95,6 @@ export default {
           display: false,
           position: 'bottom',
           labels: {
-            strokeStyle: 'rgb(255, 99, 132)',
-            // boxWidth: 500,
             fontColor: 'black',
             fontSize: 18
           }
@@ -128,7 +126,7 @@ export default {
               dataArr.map(data => {
                 sum += data
               })
-              let percentage = ((value * 100) / sum).toFixed(2) + '%'
+              let percentage = ((value * 100) / sum).toFixed(1) + '%'
               return percentage
             }
           }

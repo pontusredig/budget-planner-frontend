@@ -56,7 +56,7 @@ export default {
         },
         title: {
           display: true,
-          text: 'Budget Summary',
+          text: 'Monthly incomes,expenses and balances',
           fontColor: 'black',
           fontSize: 18
         },

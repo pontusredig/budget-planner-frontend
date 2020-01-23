@@ -61,10 +61,10 @@ export default {
   ],
   created() {
     // this.fetchBalances(), this.getMonthNames(), this.test()
-    const a = this.fetchBalances()
-    Promise.all([a]).then(() => {
+    // const a = this.fetchBalances()
+    // Promise.all([a]).then(() => {
       this.getMonthNames()
-    })
+    // })
   },
 
   data: () => ({

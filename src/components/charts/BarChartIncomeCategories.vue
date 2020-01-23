@@ -22,16 +22,17 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
+          display: false,
           labels: {
-            fontColor: 'white',
+            fontColor: 'black',
             fontSize: 18
           },
           position: 'bottom'
         },
         title: {
           display: true,
-          text: 'Budget Summary',
-          fontColor: 'white',
+          text: 'Income Summary',
+          fontColor: 'black',
           fontSize: 18
         },
         scales: {
@@ -41,7 +42,8 @@ export default {
                 display: false
               },
               ticks: {
-                fontColor: '#e8c3b9'
+                fontColor: 'black'
+                // fontColor: '#e8c3b9'
               }
             }
           ],
@@ -52,7 +54,8 @@ export default {
                 display: true
               },
               ticks: {
-                fontColor: '#e8c3b9'
+                fontColor: 'black'
+                // fontColor: '#e8c3b9'
               }
             }
           ]

@@ -1,11 +1,6 @@
 <template>
   <div align="center">
     <h1 class="pb-10">Dashboard</h1>
-
-    <!-- <v-btn v-on:click="isHidden = !isHidden">Show Expense Pie Chart</v-btn> -->
-    <!-- <div v-if="isHidden" class="chart-container"> -->
-    <!-- <div :key="income.id" v-for="income in incomes" ></div> -->
-
     <BalanceDisplayer />
     <v-divider />
     <MonthExpenseDisplayer
@@ -13,34 +8,31 @@
       :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"
       :sumExpensesForNextMonth="sumExpensesForNextMonth"
     ></MonthExpenseDisplayer>
-    <!-- 
-    <div>totalIncomes {{ totalIncomes }}</div>
-    <div>totalExpenses {{ totalExpenses }}</div>
-    <div>innerData {{ innerData }}</div>
-    <div>outerData {{ outerData }}</div>
-    <div>outer {{ outer }}</div> -->
 
     <div
       v-if="isNull"
       class="chart-container"
     >
+    <v-container class="pb-10">
       <expense-pie
         :innerData="innerData"
         :outer="outer"
-      />
-      <br>
-      <hr />
+       />
+       </v-container>
     </div>
+          <v-divider />
 
-    <div align="right">
-      <v-btn v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
+    <div class="text-right" style="margin:60px">
+      <v-btn absolute right small rounded v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
     </div>
 
     <div
       v-if="isExpenses"
       class="chart-container"
     >
+    <!-- <v-container> -->
       <h2 align="left">Expense</h2>
+    <!-- </v-container> -->
       <BarChartExpenseCategories :expenseCategory="expenseCategory" />
     </div>
     <div
@@ -51,6 +43,7 @@
       <BarChartIncomeCategories :incomeCategory="incomeCategory" />
     </div>
 
+      <br>
     <div
       v-if="isBarChartNull"
       class="chart-container"
@@ -490,8 +483,20 @@ export default {
 
 <style>
 .chart-container {
-  position: relative;
-  height: 40vh;
+  margin-top: 50px;
+  margin-right: 50px;
+  margin-left: 50px;
+  margin-bottom: 30px;
+  padding:20px;
+  /* position: relative; */
+  height: 50vh;
   width: 80vw;
+}
+
+.button {
+    position:absolute;
+    /* transition: .5s ease; */
+    top: 45%;
+    left: 70%;
 }
 </style>
