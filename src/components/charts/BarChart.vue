@@ -65,9 +65,6 @@ export default {
             {
               gridLines: {
                 display: false
-              },
-              ticks: {
-                fontColor: '#e8c3b9'
               }
             }
           ],
@@ -76,9 +73,6 @@ export default {
               display: true,
               gridLines: {
                 display: true
-              },
-              ticks: {
-                fontColor: '#e8c3b9'
               }
             }
           ]
@@ -88,7 +82,7 @@ export default {
             color: '#fff',
             anchor: 'end',
             align: 'start',
-            offset: -10,
+            offset: -20,
             borderWidth: 2,
             borderColor: '#fff',
             borderRadius: 25,
@@ -96,7 +90,7 @@ export default {
               return context.dataset.backgroundColor
             },
             font: {
-              // weight: 'bold',
+              color: 'black',
               size: '12'
             }
           }

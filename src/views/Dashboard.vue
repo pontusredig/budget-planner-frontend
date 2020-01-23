@@ -9,51 +9,39 @@
       :sumExpensesForNextMonth="sumExpensesForNextMonth"
     ></MonthExpenseDisplayer>
 
-    <div
-      v-if="isNull"
-      class="chart-container"
-    >
-    <v-container class="pb-10">
-      <expense-pie
-        :innerData="innerData"
-        :outer="outer"
-       />
-       </v-container>
+    <div v-if="isNull" class="chart-container">
+      <v-container class="pb-10">
+        <expense-pie :innerData="innerData" :outer="outer" />
+      </v-container>
     </div>
-          <v-divider />
 
     <div class="text-right" style="margin:60px">
-      <v-btn absolute right small rounded v-on:click="isExpenses = !isExpenses">Expenses/Incomes</v-btn>
+      <v-btn absolute right small rounded v-on:click="isExpenses = !isExpenses"
+        >Expenses/Incomes</v-btn
+      >
     </div>
 
-    <div
-      v-if="isExpenses"
-      class="chart-container"
-    >
-    <!-- <v-container> -->
+    <div v-if="isExpenses" class="chart-container">
+      <!-- <v-container> -->
       <h2 align="left">Expense</h2>
-    <!-- </v-container> -->
+      <!-- </v-container> -->
       <BarChartExpenseCategories :expenseCategory="expenseCategory" />
     </div>
-    <div
-      v-else
-      class="chart-container"
-    >
+    <div v-else class="chart-container">
       <h2 align="left">Income</h2>
       <BarChartIncomeCategories :incomeCategory="incomeCategory" />
     </div>
 
-      <br>
-    <div
-      v-if="isBarChartNull"
-      class="chart-container"
-    >
-      <BarChart
-        :incomesByMonth="incomesByMonth"
-        :expensesByMonth="expensesByMonth"
-        :balancesByMonth="balancesByMonth"
-      />
-    </div>
+    <br />
+    <v-container class="pb-10">
+      <div v-if="isBarChartNull" class="chart-container">
+        <BarChart
+          :incomesByMonth="incomesByMonth"
+          :expensesByMonth="expensesByMonth"
+          :balancesByMonth="balancesByMonth"
+        />
+      </div>
+    </v-container>
   </div>
 </template>
 
@@ -487,16 +475,16 @@ export default {
   margin-right: 50px;
   margin-left: 50px;
   margin-bottom: 30px;
-  padding:20px;
+  padding: 20px;
   /* position: relative; */
   height: 50vh;
   width: 80vw;
 }
 
 .button {
-    position:absolute;
-    /* transition: .5s ease; */
-    top: 45%;
-    left: 70%;
+  position: absolute;
+  /* transition: .5s ease; */
+  top: 45%;
+  left: 70%;
 }
 </style>
