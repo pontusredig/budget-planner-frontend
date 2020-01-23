@@ -1,50 +1,37 @@
 <template>
   <v-container style="width: 50%">
-    <h2 style="display: inline-block">Expenses in: </h2>
     <v-row no-gutters>
       <v-col>
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >{{ this.lastMonth + ' ' + this.lastYear   }}</v-card>
+        <v-card class="pa-2" outlined tile>{{
+          this.lastMonth + ' ' + this.lastYear
+        }}</v-card>
       </v-col>
       <v-col>
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >{{ this.month + ' ' + this.year }}</v-card>
+        <v-card class="pa-2" outlined tile>{{
+          this.month + ' ' + this.year
+        }}</v-card>
       </v-col>
       <v-col>
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >{{ this.nextMonth  + ' ' + this.nextYear}}</v-card>
+        <v-card class="pa-2" outlined tile>{{
+          this.nextMonth + ' ' + this.nextYear
+        }}</v-card>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >{{ this.sumExpensesForLastMonth  }}</v-card>
+        <v-card class="pa-2" outlined tile>{{
+          this.sumExpensesForLastMonth
+        }}</v-card>
       </v-col>
       <v-col>
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >{{ this.sumExpensesForCurrentMonth }}</v-card>
+        <v-card class="pa-2" outlined tile>{{
+          this.sumExpensesForCurrentMonth
+        }}</v-card>
       </v-col>
       <v-col>
-        <v-card
-          class="pa-2"
-          outlined
-          tile
-        >{{ this.sumExpensesForNextMonth }}</v-card>
+        <v-card class="pa-2" outlined tile>{{
+          this.sumExpensesForNextMonth
+        }}</v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -63,7 +50,7 @@ export default {
     // this.fetchBalances(), this.getMonthNames(), this.test()
     // const a = this.fetchBalances()
     // Promise.all([a]).then(() => {
-      this.getMonthNames()
+    this.getMonthNames()
     // })
   },
 

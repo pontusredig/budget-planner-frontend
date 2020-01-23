@@ -1,5 +1,6 @@
 <template>
   <div align="center">
+    <h1 class="pb-10">SAVINGS</h1>
     <BalanceDisplayer />
     <v-card
       class="mx-auto text-xs-center"

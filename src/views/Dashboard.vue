@@ -1,8 +1,11 @@
 <template>
   <div align="center">
-    <h1 class="pb-10">Dashboard</h1>
-    <BalanceDisplayer />
-    <v-divider />
+    <v-container class="pb-10">
+      <h2 style="display: inline-block">Summary:</h2>
+      <BalanceDisplayer />
+    </v-container>
+
+    <h2 style="display: inline-block">Expenses per month:</h2>
     <MonthExpenseDisplayer
       :sumExpensesForLastMonth="sumExpensesForLastMonth"
       :sumExpensesForCurrentMonth="sumExpensesForCurrentMonth"

@@ -30,7 +30,7 @@
     </v-content>
     <v-footer color="#3D0C11">
       <v-layout justify-center wrap color="#F27C3D">
-        <v-flex py-3 text-center>
+        <v-flex py-1 text-center>
           <p style="color: #F27C3D;">
             ©{{ new Date().getFullYear() }} — <strong>AleTek & PonRed</strong>
           </p>
