@@ -46,12 +46,6 @@ const router = new VueRouter({
       name: 'dashboard',
       component: () => import('../views/Dashboard.vue'),
       meta: { requiresAuth: true }
-    },
-    {
-      path: '/account',
-      name: 'account',
-      component: () => import('../views/Account.vue')
-      // meta: { requiresAuth: true }
     }
   ]
 })

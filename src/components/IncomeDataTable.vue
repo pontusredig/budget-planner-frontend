@@ -192,7 +192,6 @@ export default {
         .catch(error => {
           this.log(error)
         })
-        .finally(() => (this.loading = false))
     },
 
     fetchCategories() {
@@ -204,7 +203,6 @@ export default {
         .catch(error => {
           this.log(error)
         })
-        .finally(() => (this.loading = false))
     },
 
     editItem(item) {

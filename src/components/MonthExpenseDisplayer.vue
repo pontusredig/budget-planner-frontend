@@ -138,7 +138,6 @@ export default {
           console.log(error)
           this.errored = true
         })
-        .finally(() => (this.loading = false))
     }
   }
 }

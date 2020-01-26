@@ -158,8 +158,8 @@ export default {
       'no-console': 'off'
     },
     dialog: false,
-    getUrl: '/api/expense/getall',
-    postUrl: '/api/expense/add',
+    getUrl: 'api/expense/getall',
+    postUrl: 'api/expense/add',
     putUrl: 'api/expense/update/',
     deleteUrl: 'api/expense/delete/',
     categoriesUrl: 'api/expense/categories',

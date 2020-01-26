@@ -126,9 +126,9 @@ export default {
         '11',
         '12'
       ],
-      incomeUrl: '/api/income/getall',
-      expenseUrl: '/api/expense/getall',
-      balanceUrl: '/api/balance/getbycategory/EXPENDABLE',
+      incomeUrl: 'api/income/getall',
+      expenseUrl: 'api/expense/getall',
+      balanceUrl: 'api/balance/getbycategory/EXPENDABLE',
       expenseDatesUrl: null,
 
       balances: [],
@@ -199,7 +199,7 @@ export default {
       this.endDate = this.dateFormat(today)
       this.startDate = this.dateFormat(this.getDateMonthsBefore(today, 3))
       this.expenseDatesUrl =
-        '/api/expense/getbetweendates/' + this.startDate + '/' + this.endDate
+        'api/expense/getbetweendates/' + this.startDate + '/' + this.endDate
       return (
         axios
           .get(this.expenseDatesUrl)

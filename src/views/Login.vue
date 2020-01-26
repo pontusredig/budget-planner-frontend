@@ -74,7 +74,6 @@ export default {
         .post('/api/users/register', {
           email: this.username,
           password: this.password
-          //  matchingPassword: this.matchingPassword
         })
         .then(response => {
           this.message = response.data

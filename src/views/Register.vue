@@ -127,8 +127,8 @@ export default {
           password: this.password
         })
         .then(response => {
-          this.message = response.data
-          alert(this.message)
+          this.message = response.data.email
+          alert('User ' + this.message + ' was successfully registered!')
         })
         .catch(error => {
           // eslint-disable-next-line no-console

@@ -16,9 +16,6 @@ export default {
   components: {
     BalanceDisplayer,
     ExpenseDataTable
-  },
-
-  data: () => ({}),
-  methods: {}
+  }
 }
 </script>

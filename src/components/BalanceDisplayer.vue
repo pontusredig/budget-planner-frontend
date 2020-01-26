@@ -53,9 +53,9 @@ export default {
   },
 
   data: () => ({
-    getSavingsBalUrl: '/api/balance/getcurrent/SAVINGS',
-    getExpendableBalUrl: '/api/balance/getcurrent/EXPENDABLE',
-    getUnpaidExpensesUrl: '/api/expense/gettotalbystatus/UNPAID',
+    getSavingsBalUrl: 'api/balance/getcurrent/SAVINGS',
+    getExpendableBalUrl: 'api/balance/getcurrent/EXPENDABLE',
+    getUnpaidExpensesUrl: 'api/expense/gettotalbystatus/UNPAID',
 
     savingsBal: null,
     expendableBal: null,
@@ -85,7 +85,6 @@ export default {
           console.log(error)
           this.errored = true
         })
-        .finally(() => (this.loading = false))
     }
   }
 }

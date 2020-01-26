@@ -65,7 +65,6 @@ export default {
         .catch(error => {
           this.log(error)
         })
-        .finally(() => (this.loading = false))
     },
 
     log(obj) {
